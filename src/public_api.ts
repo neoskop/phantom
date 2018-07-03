@@ -1,1 +1,2 @@
-export * from './private_api';
+export * from './manager';
+export * from './metadata';
