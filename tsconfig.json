@@ -57,7 +57,10 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "paths": {
+      "@neoskop/phantom": [ "src/public_api.ts" ]
+    }
   },
   "files": [
     "src/public_api.ts"

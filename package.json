@@ -1,5 +1,5 @@
 {
-  "name": "@neoskop/phatom",
+  "name": "@neoskop/phantom",
   "version": "0.0.0",
   "description": "An AOP (aspect oriented programming) framework",
   "main": "bundle/phantom.bundle.js",
@@ -17,7 +17,8 @@
     "build:tsc": "tsc -p tsconfig.esm.json",
     "build:rollup": "rollup -c rollup.js",
     "prepublishOnly": "npm run build",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "install": "rm -rf node_modules/typedoc/node_modules/typescript"
   },
   "repository": {
     "type": "git",
@@ -60,7 +61,7 @@
     "tslib": "1.9.3",
     "typedoc": "^0.11.1",
     "typedoc-plugin-internal-external": "^1.0.10",
-    "typescript": "2.9.2"
+    "typescript": "^2.9.2"
   },
   "nyc": {
     "exclude": [
@@ -78,8 +79,5 @@
   },
   "peerDependencies": {
     "@angular/core": "^5.2.2 || ^6.0.0"
-  },
-  "resolutions": {
-    "typescript": "2.9.1"
   }
 }

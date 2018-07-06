@@ -1,5 +1,5 @@
 import { Inject, InjectionToken, ModuleWithProviders, NgModule, Optional, Type } from '@angular/core';
-import { AopManager } from './manager';
+import { AopManager } from '@neoskop/phantom';
 
 export const ASPECTS = new InjectionToken<object[]>('Aspect');
 
