@@ -5,11 +5,25 @@ import {
     Around,
     AroundStatic,
     Before,
-    BeforeStatic, Getter,
-    InstanceMethodPointcut, InstancePropertyPointcut, Pointcut, Setter, StaticGetter,
-    StaticMethodPointcut, StaticPropertyPointcut, StaticSetter
+    BeforeStatic,
+    Getter,
+    InstanceMethodPointcut,
+    InstancePropertyPointcut,
+    Pointcut,
+    Setter,
+    StaticGetter,
+    StaticMethodPointcut,
+    StaticPropertyPointcut,
+    StaticSetter
 } from './metadata';
-import { Reflection } from './reflection';
+import {
+    createJoinpoint,
+    createPropertyJoinpoint,
+    findPointcuts,
+    findStaticPointcuts,
+    MODE,
+    toPointcuts
+} from './utils';
 
 export interface Joinpoint extends Function {
     (...args : any[]) : any;
@@ -79,22 +93,11 @@ export class JoinpointContext<ARGS extends any[] = any[],
     }
 }
 
-export abstract class PropertyJoinpointContext<CONTEXT = any> extends AbstractJoinpointContext<CONTEXT, InstancePropertyPointcut<any>|StaticPropertyPointcut<any>> {
-    // protected value?: T;
-    //
-    // getValue() : T|undefined {
-    //     return this.value;
-    // }
-    //
-    // setValue(value : T) : this {
-    //     this.value = value;
-    //
-    //     return this;
-    // }
-}
+export abstract class PropertyJoinpointContext<CONTEXT = any> extends AbstractJoinpointContext<CONTEXT, InstancePropertyPointcut<any>|StaticPropertyPointcut<any>> {}
 
 export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
     
+    /* istanbul ignore next: instanbul bug workaround */
     constructor(context : any,
                 property : string,
                 pointcut : InstancePropertyPointcut<any> | StaticPropertyPointcut<any>,
@@ -109,6 +112,7 @@ export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoin
 
 export class SetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
     
+    /* istanbul ignore next: instanbul bug workaround */
     constructor(context : any,
                 property : string,
                 pointcut : InstancePropertyPointcut<any> | StaticPropertyPointcut<any>,
@@ -251,107 +255,3 @@ export class AopManager {
     }
 }
 
-function createJoinpoint(fn : (this : any, target : Function, ...args : any[]) => any, pointcut : string, proto : any) : Joinpoint {
-    const ownPropertyDescriptor = Object.getOwnPropertyDescriptor(proto, pointcut);
-    const origin = ownPropertyDescriptor && ownPropertyDescriptor.value;
-    return proto[ pointcut ] = Object.assign(function(this : any, ...args : any[]) {
-        const target = ownPropertyDescriptor ? ownPropertyDescriptor.value! : Object.getPrototypeOf(proto)[ pointcut ];
-        return fn.apply(this, [ target, ...args ]);
-    }, {
-        restore() {
-            if(origin) {
-                proto[ pointcut ] = origin;
-            } else {
-                delete proto[ pointcut ];
-            }
-        }
-    })
-}
-
-enum MODE { SETTER, GETTER }
-
-function getDescriptorInPrototypeChain(proto : any, name : string) : PropertyDescriptor|undefined {
-    while(proto) {
-        const descriptor = Object.getOwnPropertyDescriptor(proto, name);
-        if(descriptor) {
-            return descriptor;
-        }
-        proto = Object.getPrototypeOf(proto);
-    }
-    
-    return;
-}
-
-function createPropertyJoinpoint(fn : (this : any, targets : { getter : Function, setter : Function }, value?: any) => any, mode : MODE, pointcut : string, proto : any) : void {
-    const descriptor : PropertyDescriptor = getDescriptorInPrototypeChain(proto, pointcut) || {
-        enumerable: true,
-        configurable: true
-    };
-    
-    if(!descriptor.set && !descriptor.get) {
-        let value = descriptor.value;
-        
-        descriptor.set = function(v : any) {
-            value = v;
-        };
-        
-        descriptor.get = function() {
-            return value;
-        };
-    }
-    
-    delete descriptor.value;
-    delete descriptor.writable;
-    
-    /* istanbul ignore else */
-    if(mode === MODE.SETTER) {
-        const setter = descriptor.set;
-        if(!setter) {
-            throw new Error('Cannot install setter, only getter available');
-        }
-        
-        descriptor.set = function(value : any) {
-            fn.call(this, { setter }, value);
-        }
-    } else if(mode === MODE.GETTER) {
-        const getter = descriptor.get;
-        if(!getter) {
-            throw new Error('Cannot install getter, only setter available');
-        }
-        
-        descriptor.get = function() {
-            return fn.call(this, { getter });
-        }
-    }
-    
-    Object.defineProperty(proto, pointcut, descriptor);
-}
-
-function findPointcuts<T>(cls : Type<T>, selector : keyof T | string[] | RegExp) : string[] {
-    const allMethods = Reflection.getAllClassMethods(cls);
-    
-    return allMethods.filter(createFilter(selector));
-}
-
-function findStaticPointcuts<T extends Type<any>>(cls : T, selector : keyof T | string[] | RegExp) : string[] {
-    const allMethods = Reflection.getAllStaticClassMethods(cls);
-    
-    return allMethods.filter(createFilter(selector));
-}
-
-function toPointcuts<T>(selector : keyof T | keyof T[]) {
-    if(Array.isArray(selector)) {
-        return selector;
-    }
-    return [ selector ]
-}
-
-function createFilter<T>(filter : keyof T | string[] | RegExp) : (str : string) => boolean {
-    if(filter instanceof RegExp) {
-        return str => filter.test(str);
-    } else if(Array.isArray(filter)) {
-        return str => filter.includes(str);
-    } else {
-        return str => str === filter;
-    }
-}
