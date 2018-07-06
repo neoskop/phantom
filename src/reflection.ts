@@ -1,5 +1,8 @@
 import { Type } from '@angular/core';
 
+/**
+ * @hidden
+ */
 export class Reflection {
     static getParentClasses(cls : Type<any>) : Type<any>[] {
         const parents : Type<any>[] = [];

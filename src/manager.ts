@@ -25,12 +25,18 @@ import {
     toPointcuts
 } from './utils';
 
+/**
+ * A joinpoint who invokes the advice and can be restored to the origin method.
+ */
 export interface Joinpoint extends Function {
     (...args : any[]) : any;
     
     restore() : void;
 }
 
+/**
+ * Abstract base class for all joinpoint contexts
+ */
 export abstract class AbstractJoinpointContext<CONTEXT = any, P extends Pointcut<any> = Pointcut<any>> {
     constructor(protected readonly context : CONTEXT,
                 protected readonly property : string,
@@ -38,19 +44,31 @@ export abstract class AbstractJoinpointContext<CONTEXT = any, P extends Pointcut
         
     }
     
+    /**
+     * Returns the invoking context, usually `this`.
+     */
     getContext() : CONTEXT {
         return this.context;
     }
     
+    /**
+     * Returns the method or property name
+     */
     getProperty() : string {
         return this.property;
     }
     
+    /**
+     * Returns the pointcut annotation
+     */
     getPointcut() : P {
         return this.pointcut;
     }
 }
 
+/**
+ * Joinpoint context for method advices
+ */
 export class JoinpointContext<ARGS extends any[] = any[],
     CONTEXT = any,
     RESULT = any> extends AbstractJoinpointContext<CONTEXT, InstanceMethodPointcut<any>|StaticMethodPointcut<any>> {
@@ -64,30 +82,48 @@ export class JoinpointContext<ARGS extends any[] = any[],
         super(context, property, pointcut);
     }
     
+    /**
+     * Returns all arguments
+     */
     getArguments() : ARGS {
         return this.args;
     }
     
+    /**
+     * Returns the argument at index `index`
+     */
     getArgument<Index extends keyof ARGS>(index : Index) : ARGS[Index] | undefined {
         return this.args[ index ];
     }
     
+    /**
+     * Set a specific argument
+     */
     setArgument<Index extends keyof ARGS>(index : Index, arg : ARGS[Index]) : this {
         this.args[ index ] = arg;
         
         return this;
     }
     
+    /**
+     * Returns the method result
+     */
     getResult() : RESULT | undefined {
         return this.result;
     }
     
+    /**
+     * Set/overwrites the method result
+     */
     setResult(result : RESULT) : this {
         this.result = result;
         
         return this;
     }
     
+    /**
+     * Invoke the origin method, only applicable on `Around` advices
+     */
     proceed() {
         return this.target!.apply(this.context, this.getArguments());
     }
@@ -95,6 +131,9 @@ export class JoinpointContext<ARGS extends any[] = any[],
 
 export abstract class PropertyJoinpointContext<CONTEXT = any> extends AbstractJoinpointContext<CONTEXT, InstancePropertyPointcut<any>|StaticPropertyPointcut<any>> {}
 
+/**
+ * Joinpoint context for getter advices
+ */
 export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
     
     /* istanbul ignore next: instanbul bug workaround */
@@ -105,11 +144,17 @@ export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoin
         super(context, property, pointcut);
     }
     
+    /**
+     * Returns the value of the origin getter
+     */
     getValue() : T {
         return this.getter.call(this.context);
     }
 }
 
+/**
+ * Joinpoint context for setter advices
+ */
 export class SetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
     
     /* istanbul ignore next: instanbul bug workaround */
@@ -121,14 +166,23 @@ export class SetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoin
         super(context, property, pointcut);
     }
     
+    /**
+     * Set the value by calling the origin setter
+     */
     setValue(value : T) : void {
         return this.setter.call(this.context, value);
     }
     
+    /**
+     * Returns the setter argument value
+     */
     getArgument() : T {
         return this.argument;
     }
     
+    /**
+     * Calls origin setter with argument
+     */
     proceed() {
         const arg = this.getArgument();
         this.setValue(arg);
@@ -138,6 +192,9 @@ export class SetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoin
 }
 
 export class AopManager {
+    /**
+     * Install all advices of the given aspects
+     */
     install(aspects : any[]) {
         for(const aspect of aspects) {
             const type = aspect.constructor;

@@ -2,6 +2,9 @@ import { Type } from '@neoskop/annotation-factory';
 import { Joinpoint } from './manager';
 import { Reflection } from './reflection';
 
+/**
+ * @hidden
+ */
 export function createJoinpoint(fn : (this : any, target : Function, ...args : any[]) => any, pointcut : string, proto : any) : Joinpoint {
     const ownPropertyDescriptor = Object.getOwnPropertyDescriptor(proto, pointcut);
     const origin = ownPropertyDescriptor && ownPropertyDescriptor.value;
@@ -19,8 +22,14 @@ export function createJoinpoint(fn : (this : any, target : Function, ...args : a
     })
 }
 
+/**
+ * @hidden
+ */
 export enum MODE { SETTER, GETTER }
 
+/**
+ * @hidden
+ */
 function getDescriptorInPrototypeChain(proto : any, name : string) : PropertyDescriptor|undefined {
     while(proto) {
         const descriptor = Object.getOwnPropertyDescriptor(proto, name);
@@ -33,6 +42,9 @@ function getDescriptorInPrototypeChain(proto : any, name : string) : PropertyDes
     return;
 }
 
+/**
+ * @hidden
+ */
 export function createPropertyJoinpoint(fn : (this : any, targets : { getter : Function, setter : Function }, value?: any) => any, mode : MODE, pointcut : string, proto : any) : void {
     const descriptor : PropertyDescriptor = getDescriptorInPrototypeChain(proto, pointcut) || {
         enumerable: true,
@@ -78,18 +90,27 @@ export function createPropertyJoinpoint(fn : (this : any, targets : { getter : F
     Object.defineProperty(proto, pointcut, descriptor);
 }
 
+/**
+ * @hidden
+ */
 export function findPointcuts<T>(cls : Type<T>, selector : keyof T | string[] | RegExp) : string[] {
     const allMethods = Reflection.getAllClassMethods(cls);
     
     return allMethods.filter(createFilter(selector));
 }
 
+/**
+ * @hidden
+ */
 export function findStaticPointcuts<T extends Type<any>>(cls : T, selector : keyof T | string[] | RegExp) : string[] {
     const allMethods = Reflection.getAllStaticClassMethods(cls);
     
     return allMethods.filter(createFilter(selector));
 }
 
+/**
+ * @hidden
+ */
 export function toPointcuts<T>(selector : keyof T | keyof T[]) {
     if(Array.isArray(selector)) {
         return selector;
@@ -97,6 +118,9 @@ export function toPointcuts<T>(selector : keyof T | keyof T[]) {
     return [ selector ]
 }
 
+/**
+ * @hidden
+ */
 export function createFilter<T>(filter : keyof T | string[] | RegExp) : (str : string) => boolean {
     if(filter instanceof RegExp) {
         return str => filter.test(str);

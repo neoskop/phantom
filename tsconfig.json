@@ -62,10 +62,11 @@
   "files": [
     "src/public_api.ts"
   ],
-  "include": [
-    "src/*.spec.ts"
-  ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "typedocOptions": {
+    "out": "docs",
+    "mode": "file"
+  }
 }
