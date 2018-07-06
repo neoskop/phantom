@@ -21,7 +21,41 @@ yarn add @neoskop/phantom
 ## Usage
 
 ```typescript
-// TBD
+import { AopManager, Before, After, JoinpointContext } from '@neoskop/phantom';
+
+class TestClass {
+    foo(arg : string) {
+        return arg.toUpperCase();
+    }
+    bar(arg : string) {
+        return arg.toLowerCase()
+    }
+}
+
+class LoggerAspect {
+    @Before(TestClass, /./)
+    beforeEach(jp : JoinpointContext) {
+        console.log('> TestClass', jp.getProperty(), jp.getArguments());
+    }
+    
+    @After(TestClass, /./)
+    afterEach(jp : JoinpointContext) {
+        console.log('< TestClass', jp.getProperty(), jp.getResult());
+    }
+}
+
+const manager = new AopManager();
+manager.install([ new LoggerAspect() ]);
+
+const instance = new TestClass();
+
+console.log(instance.foo('Foo')); // > TestClass foo [ 'Foo' ]
+                                  // < TestClass foo FOO
+                                  // FOO
+                                     
+console.log(instance.bar('Bar')); // > TestClass bar [ 'Bar' ]
+                                  // < TestClass bar bar
+                                  // bar
 ```
 
 ## Testing
