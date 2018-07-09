@@ -2,13 +2,16 @@ import resolve from 'rollup-plugin-node-resolve';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import commonjs from 'rollup-plugin-commonjs';
 
+const globals = {
+    '@angular/core': 'ng.core',
+    '@neoskop/annotation-factory': 'neoskop.annotation_factory'
+};
+
 export default {
     input: 'dist/public_api.js',
-    external: [ '@angular/core' ],
+    external: Object.keys(globals),
     output: {
-        globals: {
-            '@angular/core': 'ng.core'
-        },
+        globals,
         format: 'umd',
         name: 'neoskop.phantom',
         file: 'bundle/phantom.bundle.js',
@@ -22,6 +25,5 @@ export default {
         commonjs(),
         sourcemaps()
     ],
-    treeshake: true,
-
+    treeshake: true
 }
