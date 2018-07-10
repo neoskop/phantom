@@ -1,6 +1,7 @@
 import { Type } from '@neoskop/annotation-factory';
 import { Joinpoint } from './manager';
 import { Reflection } from './reflection';
+import { Property } from '@neoskop/phantom';
 
 /**
  * @hidden
@@ -111,11 +112,11 @@ export function findStaticPointcuts<T extends Type<any>>(cls : T, selector : key
 /**
  * @hidden
  */
-export function toPointcuts<T>(selector : keyof T | keyof T[]) {
+export function toPointcuts<T>(selector : Property<T>) : string[] {
     if(Array.isArray(selector)) {
         return selector;
     }
-    return [ selector ]
+    return [ selector as string ]
 }
 
 /**

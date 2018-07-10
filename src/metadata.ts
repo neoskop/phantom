@@ -5,29 +5,32 @@ export type Cls<T> = {
     readonly prototype : T;
 }
 
+export type MethodProperty<T> = string|string[]|keyof T|keyof T[]|RegExp;
+export type Property<T> = string|string[]|keyof T|keyof T[];
+
 export interface InstanceMethodPointcutDecorator {
-    <T>(cls : Cls<T>, property : keyof T|string[]|RegExp) : any;
-    new<T>(cls : Cls<T>, property : keyof T|string[]|RegExp) : InstanceMethodPointcut<T>;
+    <T>(cls : Cls<T>, property : MethodProperty<T>) : any;
+    new<T>(cls : Cls<T>, property : MethodProperty<T>) : InstanceMethodPointcut<T>;
 }
 
 export interface StaticMethodPointcutDecorator {
-    <T>(cls : T, property : keyof T|string[]|RegExp) : any;
-    new<T>(cls : T, property : keyof T|string[]|RegExp) : StaticMethodPointcut<T>;
+    <T>(cls : T, property : MethodProperty<T>) : any;
+    new<T>(cls : T, property : MethodProperty<T>) : StaticMethodPointcut<T>;
 }
 
 export interface InstancePropertyPointcutDecorator {
-    <T>(cls : Cls<T>, property : keyof T|string[]) : any;
-    new<T>(cls : Cls<T>, property : keyof T|string[]) : InstancePropertyPointcut<T>;
+    <T>(cls : Cls<T>, property : Property<T>) : any;
+    new<T>(cls : Cls<T>, property : Property<T>) : InstancePropertyPointcut<T>;
 }
 
 export interface StaticPropertyPointcutDecorator {
-    <T>(cls : T, property : keyof T|string[]) : any;
-    new<T>(cls : T, property : keyof T|string[]) : StaticPropertyPointcut<T>;
+    <T>(cls : T, property : Property<T>) : any;
+    new<T>(cls : T, property : Property<T>) : StaticPropertyPointcut<T>;
 }
 
 export abstract class Pointcut<T> {
     abstract readonly cls : Cls<T>|T;
-    abstract readonly property : keyof T|keyof T[]|string[]|RegExp;
+    abstract readonly property : Property<T> | MethodProperty<T>;
 }
 
 
@@ -38,22 +41,22 @@ const propsFactory = (cls : Cls<any>, property : string|string[]|RegExp) => ({
 
 export abstract class InstanceMethodPointcut<T> extends Pointcut<T> {
     readonly cls! : Type<T>;
-    readonly property! : keyof T|keyof T[]|RegExp;
+    readonly property! : MethodProperty<T>;
 }
 
 export abstract class StaticMethodPointcut<T> extends Pointcut<T> {
     readonly cls! : T;
-    readonly property! : keyof T|keyof T[]|RegExp;
+    readonly property! : MethodProperty<T>;
 }
 
 export abstract class InstancePropertyPointcut<T> extends Pointcut<T> {
     readonly cls! : Type<T>;
-    readonly property! : keyof T|keyof T[];
+    readonly property! : Property<T>;
 }
 
 export abstract class StaticPropertyPointcut<T> extends Pointcut<T> {
     readonly cls! : T;
-    readonly property! : keyof T|keyof T[];
+    readonly property! : Property<T>;
 }
 
 /**
