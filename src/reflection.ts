@@ -1,4 +1,5 @@
 import { Type } from '@angular/core';
+import { unique } from './utils';
 
 /**
  * @hidden
@@ -29,12 +30,12 @@ export class Reflection {
     
     static getAllClassMethods(cls : Type<any>) : string[] {
         const methods : string[] = [];
-        
+
         for(const clazz of [ cls, ...this.getParentClasses(cls) ]) {
             methods.push(...this.getOwnClassMethods(clazz));
         }
-        
-        return methods.filter((c, i, a) => a.indexOf(c) === i);
+
+        return methods.filter(unique);
     }
     
     static getOwnStaticClassMethods(cls : Type<any>) : string[] {
@@ -43,11 +44,11 @@ export class Reflection {
     
     static getAllStaticClassMethods(cls : Type<any>) : string[] {
         const methods : string[] = [];
-    
+
         for(const clazz of [ cls, ...this.getParentClasses(cls) ]) {
             methods.push(...this.getOwnStaticClassMethods(clazz));
         }
-    
-        return methods.filter((c, i, a) => a.indexOf(c) === i);
+
+        return methods.filter(unique);
     }
 }

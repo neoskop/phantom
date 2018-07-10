@@ -7,4 +7,5 @@ export {
     findStaticPointcuts as ɵfindStaticPointcuts,
     MODE as ɵMODE,
     toPointcuts as ɵtoPointcuts,
+    unique as ɵunique,
 } from './utils'

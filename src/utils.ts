@@ -131,3 +131,10 @@ export function createFilter<T>(filter : keyof T | string[] | RegExp) : (str : s
         return str => str === filter;
     }
 }
+
+/**
+ * hidden
+ */
+export function unique<T>(c : T, i : number, a : T[]) : boolean {
+    return a.indexOf(c) === i;
+}
