@@ -1,8 +1,13 @@
 import { Annotator, Type } from '@neoskop/annotation-factory';
 
+export type Cls<T> = {
+    new? (...args : any[]) : T;
+    readonly prototype : T;
+}
+
 export interface InstanceMethodPointcutDecorator {
-    <T>(cls : Type<T>, property : keyof T|string[]|RegExp) : any;
-    new<T>(cls : Type<T>, property : keyof T|string[]|RegExp) : InstanceMethodPointcut<T>;
+    <T>(cls : Cls<T>, property : keyof T|string[]|RegExp) : any;
+    new<T>(cls : Cls<T>, property : keyof T|string[]|RegExp) : InstanceMethodPointcut<T>;
 }
 
 export interface StaticMethodPointcutDecorator {
@@ -11,8 +16,8 @@ export interface StaticMethodPointcutDecorator {
 }
 
 export interface InstancePropertyPointcutDecorator {
-    <T>(cls : Type<T>, property : keyof T|string[]) : any;
-    new<T>(cls : Type<T>, property : keyof T|string[]) : InstancePropertyPointcut<T>;
+    <T>(cls : Cls<T>, property : keyof T|string[]) : any;
+    new<T>(cls : Cls<T>, property : keyof T|string[]) : InstancePropertyPointcut<T>;
 }
 
 export interface StaticPropertyPointcutDecorator {
@@ -21,12 +26,12 @@ export interface StaticPropertyPointcutDecorator {
 }
 
 export abstract class Pointcut<T> {
-    abstract readonly cls : Type<T>|T;
+    abstract readonly cls : Cls<T>|T;
     abstract readonly property : keyof T|keyof T[]|string[]|RegExp;
 }
 
 
-const propsFactory = (cls : Type<any>, property : string|string[]|RegExp) => ({
+const propsFactory = (cls : Cls<any>, property : string|string[]|RegExp) => ({
     cls,
     property
 });
