@@ -17,6 +17,8 @@ import {
     StaticSetter
 } from './metadata';
 import {
+    ArgumentTypes,
+    ReturnType,
     createJoinpoint,
     createPropertyJoinpoint,
     findPointcuts,
@@ -69,9 +71,10 @@ export abstract class AbstractJoinpointContext<CONTEXT = any, P extends Pointcut
 /**
  * Joinpoint context for method advices
  */
-export class JoinpointContext<ARGS extends any[] = any[],
-    CONTEXT = any,
-    RESULT = any> extends AbstractJoinpointContext<CONTEXT, InstanceMethodPointcut<any>|StaticMethodPointcut<any>> {
+export class JoinpointContext<CONTEXT = any,
+                            P extends keyof CONTEXT = never,
+                            ARGS extends any = ArgumentTypes<CONTEXT[P]>,
+                            RESULT = ReturnType<CONTEXT[P]>> extends AbstractJoinpointContext<CONTEXT, InstanceMethodPointcut<any>|StaticMethodPointcut<any>> {
     protected result? : RESULT;
     
     constructor(protected args : ARGS,
@@ -92,14 +95,26 @@ export class JoinpointContext<ARGS extends any[] = any[],
     /**
      * Returns the argument at index `index`
      */
-    getArgument<Index extends keyof ARGS>(index : Index) : ARGS[Index] | undefined {
+    getArgument(index : 0) : ARGS[0] | undefined;
+    getArgument(index : 1) : ARGS[1] | undefined;
+    getArgument(index : 2) : ARGS[2] | undefined;
+    getArgument(index : 3) : ARGS[3] | undefined;
+    getArgument(index : 4) : ARGS[4] | undefined;
+    getArgument(index : 5) : ARGS[5] | undefined;
+    getArgument(index : 6) : ARGS[6] | undefined;
+    getArgument(index : 7) : ARGS[7] | undefined;
+    getArgument(index : 8) : ARGS[8] | undefined;
+    getArgument(index : 9) : ARGS[9] | undefined;
+    getArgument(index : number) : any | undefined;
+    getArgument<Index extends keyof ARGS>(index : Index) : ARGS[Index] | undefined;
+    getArgument(index : number) : any | undefined {
         return this.args[ index ];
     }
     
     /**
      * Set a specific argument
      */
-    setArgument<Index extends keyof ARGS>(index : Index, arg : ARGS[Index]) : this {
+    setArgument<Index extends keyof ARGS|number>(index : Index, arg : ARGS[Index]) : this {
         this.args[ index ] = arg;
         
         return this;
@@ -129,12 +144,13 @@ export class JoinpointContext<ARGS extends any[] = any[],
     }
 }
 
-export abstract class PropertyJoinpointContext<CONTEXT = any> extends AbstractJoinpointContext<CONTEXT, InstancePropertyPointcut<any>|StaticPropertyPointcut<any>> {}
+
+export abstract class PropertyJoinpointContext<CONTEXT> extends AbstractJoinpointContext<CONTEXT, InstancePropertyPointcut<any>|StaticPropertyPointcut<any>> {}
 
 /**
  * Joinpoint context for getter advices
  */
-export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
+export class GetterJoinpointContext<CONTEXT = any, P extends keyof CONTEXT = never, T = CONTEXT[P]> extends PropertyJoinpointContext<CONTEXT> {
     
     /* istanbul ignore next: instanbul bug workaround */
     constructor(context : any,
@@ -155,7 +171,7 @@ export class GetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoin
 /**
  * Joinpoint context for setter advices
  */
-export class SetterJoinpointContext<T = any, CONTEXT = any> extends PropertyJoinpointContext<CONTEXT> {
+export class SetterJoinpointContext<CONTEXT = any, P extends keyof CONTEXT = never, T = CONTEXT[P]> extends PropertyJoinpointContext<CONTEXT> {
     
     /* istanbul ignore next: instanbul bug workaround */
     constructor(context : any,

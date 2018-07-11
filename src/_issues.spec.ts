@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { Before } from './metadata';
+import { JoinpointContext } from './manager';
 
 describe('Github Issues (https://github.com/neoskop/phantom/issues)', () => {
     describe('#1 (https://github.com/neoskop/phantom/issues/1)', () => {
@@ -11,7 +12,7 @@ describe('Github Issues (https://github.com/neoskop/phantom/issues)', () => {
             
             class TestAspect {
                 @Before(TestClass, 'foobar')
-                beforeFoobar() {}
+                beforeFoobar(_jp : JoinpointContext<TestClass, 'foobar'>) {}
             }
             
             expect(new TestAspect()).to.be.instanceOf(TestAspect);
@@ -26,7 +27,7 @@ describe('Github Issues (https://github.com/neoskop/phantom/issues)', () => {
             
             class TestAspect {
                 @Before(TestClass, 'foobar')
-                beforeFoobar() {}
+                beforeFoobar(_jp : JoinpointContext<TestClass>) {}
             }
     
             expect(new TestAspect()).to.be.instanceOf(TestAspect);

@@ -138,3 +138,25 @@ export function createFilter<T>(filter : keyof T | string[] | RegExp) : (str : s
 export function unique<T>(c : T, i : number, a : T[]) : boolean {
     return a.indexOf(c) === i;
 }
+
+/**
+ * hidden
+ */
+export type ArgumentTypes<T> =
+    T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F, arg6 : infer G, arg7 : infer H, arg8 : infer I, arg9 : infer J) => any ? [ A, B, C, D, E, F, G, H, I, J ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F, arg6 : infer G, arg7 : infer H, arg8 : infer I) => any ? [ A, B, C, D, E, F, G, H, I ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F, arg6 : infer G, arg7 : infer H) => any ? [ A, B, C, D, E, F, G, H ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F, arg6 : infer G) => any ? [ A, B, C, D, E, F, G ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F) => any ? [ A, B, C, D, E, F ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E) => any ? [ A, B, C, D, E ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D) => any ? [ A, B, C, D ]
+        : T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C) => any ? [ A, B, C ]
+        : T extends (arg0 : infer A, arg1 : infer B) => any ? [ A, B ]
+        : T extends (arg0 : infer A) => any ? [ A ]
+        : T extends () => any ? [ void ]
+        : any[];
+
+/**
+ * hidden
+ */
+export type ReturnType<T> = T extends (...args : any[]) => infer R ? R : any;

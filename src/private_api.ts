@@ -8,4 +8,6 @@ export {
     MODE as ɵMODE,
     toPointcuts as ɵtoPointcuts,
     unique as ɵunique,
+    ArgumentTypes as ɵArgumentTypes,
+    ReturnType as ɵReturnType
 } from './utils'

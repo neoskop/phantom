@@ -134,7 +134,7 @@ declare class TestClassDeclaration extends ParentClass {
     
     static staticAroundTest(...args : any[]) : any;
     
-    beforeTest(...args : any[]) : any;
+    beforeTest(intercept?: boolean|string, name?: string, ...args : any[]) : any;
     
     afterTest(...args : any[]) : any;
     
@@ -215,72 +215,72 @@ describe('AopManager', () => {
         
         class _TestAspect {
             @Before(TestClass, /misc/)
-            beforeAny(_jp : JoinpointContext) {
+            beforeAny(_jp : JoinpointContext<TestClassDeclaration, 'misc'>) {
             }
-            
+
             @Before(TestClass, [ 'misc', 'misc2' ])
-            beforeSome(_jp : JoinpointContext) {
+            beforeSome(_jp : JoinpointContext<TestClassDeclaration, 'misc' | 'misc2'>) {
             }
-            
+
             @Misc()
             @Before(TestClass, 'beforeTest')
-            beforeAdvice(jp : JoinpointContext) {
+            beforeAdvice(jp : JoinpointContext<TestClassDeclaration, 'beforeTest'>) {
                 SPIES.before(jp);
                 if(true === jp.getArgument(0)) {
                     jp.setArgument(1, 'foobar')
                 }
             }
-            
+
             @After(TestClass, 'afterTest')
-            afterAdvice(jp : JoinpointContext) {
+            afterAdvice(jp : JoinpointContext<TestClassDeclaration, 'afterTest'>) {
                 SPIES.after(jp);
                 if(true === jp.getArgument(0)) {
                     jp.setResult('foobar');
                 }
             }
-            
+
             @Around(TestClass, 'aroundTest')
-            aroundAdvice(jp : JoinpointContext) {
+            aroundAdvice(jp : JoinpointContext<TestClassDeclaration, 'aroundTest'>) {
                 SPIES.around(jp);
                 if(!jp.getArgument(0)) {
                     return jp.proceed();
                 }
             }
-            
+
             @Before(TestClass, 'parentTest')
-            parentAdvice(jp : JoinpointContext) {
+            parentAdvice(jp : JoinpointContext<TestClassDeclaration, 'parentTest'>) {
                 SPIES.parent(jp);
             }
-            
+
             @Before(TestClass, 'parentParentTest')
-            parentParentAdvice(jp : JoinpointContext) {
+            parentParentAdvice(jp : JoinpointContext<TestClassDeclaration, 'parentParentTest'>) {
                 SPIES.parentParent(jp);
             }
-            
+
             @BeforeStatic(TestClass, 'staticBeforeTest')
-            staticBeforeAdvice(jp : JoinpointContext) {
+            staticBeforeAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticBeforeTest'>) {
                 SPIES.staticBefore(jp);
                 if(true === jp.getArgument(0)) {
                     jp.setArgument(1, 'foobar')
                 }
             }
-            
+
             @AfterStatic(TestClass, 'staticAfterTest')
-            staticAfterAdvice(jp : JoinpointContext) {
+            staticAfterAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticAfterTest'>) {
                 SPIES.staticAfter(jp);
                 if(true === jp.getArgument(0)) {
                     jp.setResult('foobar');
                 }
             }
-            
+
             @AroundStatic(TestClass, 'staticAroundTest')
-            staticAroundAdvice(jp : JoinpointContext) {
+            staticAroundAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticAroundTest'>) {
                 SPIES.staticAround(jp);
                 if(!jp.getArgument(0)) {
                     return jp.proceed();
                 }
             }
-            
+
             @BeforeStatic(TestClass, 'staticParentTest')
             staticParentAdvice() {
             }
@@ -353,7 +353,7 @@ describe('AopManager', () => {
             expect(SPIES.beforeTest).to.have.been.calledOnceWith('a', 'b', 'c');
             expect(SPIES.before).to.have.been.calledBefore(SPIES.beforeTest);
             
-            const jp : JoinpointContext = SPIES.before.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<TestClassDeclaration, 'beforeTest'> = SPIES.before.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(instance);
             expect(jp.getProperty()).to.be.equal('beforeTest');
@@ -375,7 +375,7 @@ describe('AopManager', () => {
             expect(SPIES.afterTest).to.have.been.calledOnce;
             expect(SPIES.afterTest).to.have.been.calledBefore(SPIES.after);
             
-            const jp : JoinpointContext = SPIES.after.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<TestClassDeclaration, 'afterTest'> = SPIES.after.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(instance);
             expect(jp.getProperty()).to.be.equal('afterTest');
@@ -397,7 +397,7 @@ describe('AopManager', () => {
             expect(SPIES.aroundTest).to.have.been.calledOnce;
             expect(SPIES.around).to.have.been.calledBefore(SPIES.aroundTest);
             
-            const jp : JoinpointContext = SPIES.around.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<TestClassDeclaration, 'aroundTest'> = SPIES.around.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(instance);
             expect(jp.getProperty()).to.be.equal('aroundTest');
@@ -426,18 +426,18 @@ describe('AopManager', () => {
         it('should set and get standard values', () => {
             class Aspect {
                 @Setter(TestClass, 'withoutValue')
-                setterAdviceWithout(jp : SetterJoinpointContext) {
+                setterAdviceWithout(jp : SetterJoinpointContext<TestClassDeclaration, 'withoutValue'>) {
                     setterAdviceWithout(jp);
                     jp.proceed();
                 }
     
                 @Getter(TestClass, 'withoutValue')
-                getterAdviceWithout(jp : GetterJoinpointContext) {
+                getterAdviceWithout(jp : GetterJoinpointContext<TestClassDeclaration, 'withoutValue'>) {
                     getterAdviceWithout(jp);
                     return jp.getValue();
                 }
                 @Setter(TestClass, 'withValue')
-                setterAdviceWith(jp : SetterJoinpointContext) {
+                setterAdviceWith(jp : SetterJoinpointContext<TestClassDeclaration, 'withValue'>) {
                     setterAdviceWith(jp);
                     if(jp.getArgument()) {
                         jp.proceed();
@@ -445,7 +445,7 @@ describe('AopManager', () => {
                 }
     
                 @Getter(TestClass, 'withValue')
-                getterAdviceWith(jp : GetterJoinpointContext) {
+                getterAdviceWith(jp : GetterJoinpointContext<TestClassDeclaration, 'withValue'>) {
                     getterAdviceWith(jp);
                     const value = jp.getValue();
                     return value;
@@ -495,25 +495,25 @@ describe('AopManager', () => {
             const getterParentParent = spy();
             class Aspect {
                 @Setter(TestClass, 'parent')
-                setterParent(jp : SetterJoinpointContext) {
+                setterParent(jp : SetterJoinpointContext<TestClassDeclaration, 'parent'>) {
                     setterParent(jp);
                     jp.proceed();
                 }
         
                 @Getter(TestClass, 'parent')
-                getterParent(jp : GetterJoinpointContext) {
+                getterParent(jp : GetterJoinpointContext<TestClassDeclaration, 'parent'>) {
                     getterParent(jp);
                     return jp.getValue();
                 }
                 
                 @Setter(TestClass, 'parentParent')
-                setterParentParent(jp : SetterJoinpointContext) {
+                setterParentParent(jp : SetterJoinpointContext<TestClassDeclaration, 'parentParent'>) {
                     setterParentParent(jp);
                     jp.proceed();
                 }
         
                 @Getter(TestClass, 'parentParent')
-                getterParentParent(jp : GetterJoinpointContext) {
+                getterParentParent(jp : GetterJoinpointContext<TestClassDeclaration, 'parentParent'>) {
                     getterParentParent(jp);
                     return jp.getValue();
                 }
@@ -551,7 +551,7 @@ describe('AopManager', () => {
         it('should throw on getter aspect on setter only', () => {
             class Aspect {
                 @Getter(TestClass, 'setterOnly')
-                getter(jp : GetterJoinpointContext) {
+                getter(jp : GetterJoinpointContext<TestClassDeclaration, 'setterOnly'>) {
                     return jp.getValue();
                 }
             }
@@ -564,7 +564,7 @@ describe('AopManager', () => {
         it('should throw on setter aspect on getter only', () => {
             class Aspect {
                 @Setter(TestClass, 'getterOnly')
-                setter(jp : SetterJoinpointContext) {
+                setter(jp : SetterJoinpointContext<TestClassDeclaration, 'getterOnly'>) {
                     jp.proceed();
                 }
             }
@@ -630,7 +630,7 @@ describe('AopManager', () => {
             expect(SPIES.staticBeforeTest).to.have.been.calledOnce;
             expect(SPIES.staticBefore).to.have.been.calledBefore(SPIES.staticBeforeTest);
             
-            const jp : JoinpointContext = SPIES.staticBefore.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticBeforeTest'> = SPIES.staticBefore.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(TestClass);
             expect(jp.getProperty()).to.be.equal('staticBeforeTest');
@@ -650,7 +650,7 @@ describe('AopManager', () => {
             expect(SPIES.staticAfterTest).to.have.been.calledOnce;
             expect(SPIES.staticAfterTest).to.have.been.calledBefore(SPIES.staticAfter);
             
-            const jp : JoinpointContext = SPIES.staticAfter.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticAfterTest'> = SPIES.staticAfter.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(TestClass);
             expect(jp.getProperty()).to.be.equal('staticAfterTest');
@@ -671,7 +671,7 @@ describe('AopManager', () => {
             expect(SPIES.staticAroundTest).to.have.been.calledOnce;
             expect(SPIES.staticAround).to.have.been.calledBefore(SPIES.staticAroundTest);
             
-            const jp : JoinpointContext = SPIES.staticAround.getCall(0).args[ 0 ];
+            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticAroundTest'> = SPIES.staticAround.getCall(0).args[ 0 ];
             expect(jp).to.be.instanceOf(JoinpointContext);
             expect(jp.getContext()).to.be.equal(TestClass);
             expect(jp.getProperty()).to.be.equal('staticAroundTest');
@@ -692,18 +692,18 @@ describe('AopManager', () => {
         it('should set and get standard values', () => {
             class Aspect {
                 @StaticSetter(TestClass, 'withoutValue')
-                setterAdviceWithout(jp : SetterJoinpointContext) {
+                setterAdviceWithout(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'withoutValue'>) {
                     setterAdviceWithout(jp);
                     jp.proceed();
                 }
                 
                 @StaticGetter(TestClass, 'withoutValue')
-                getterAdviceWithout(jp : GetterJoinpointContext) {
+                getterAdviceWithout(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'withoutValue'>) {
                     getterAdviceWithout(jp);
                     return jp.getValue();
                 }
                 @StaticSetter(TestClass, 'withValue')
-                setterAdviceWith(jp : SetterJoinpointContext) {
+                setterAdviceWith(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'withValue'>) {
                     setterAdviceWith(jp);
                     if(jp.getArgument()) {
                         jp.proceed();
@@ -711,7 +711,7 @@ describe('AopManager', () => {
                 }
                 
                 @StaticGetter(TestClass, 'withValue')
-                getterAdviceWith(jp : GetterJoinpointContext) {
+                getterAdviceWith(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'withValue'>) {
                     getterAdviceWith(jp);
                     const value = jp.getValue();
                     return value;
@@ -760,25 +760,25 @@ describe('AopManager', () => {
             const getterParentParent = spy();
             class Aspect {
                 @StaticSetter(TestClass, 'parent')
-                setterParent(jp : SetterJoinpointContext) {
+                setterParent(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'parent'>) {
                     setterParent(jp);
                     jp.proceed();
                 }
                 
                 @StaticGetter(TestClass, 'parent')
-                getterParent(jp : GetterJoinpointContext) {
+                getterParent(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'parent'>) {
                     getterParent(jp);
                     return jp.getValue();
                 }
                 
                 @StaticSetter(TestClass, 'parentParent')
-                setterParentParent(jp : SetterJoinpointContext) {
+                setterParentParent(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'parentParent'>) {
                     setterParentParent(jp);
                     jp.proceed();
                 }
                 
                 @StaticGetter(TestClass, 'parentParent')
-                getterParentParent(jp : GetterJoinpointContext) {
+                getterParentParent(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'parentParent'>) {
                     getterParentParent(jp);
                     return jp.getValue();
                 }
@@ -815,7 +815,7 @@ describe('AopManager', () => {
         it('should throw on getter aspect on setter only', () => {
             class Aspect {
                 @StaticGetter(TestClass, [ 'setterOnly' ])
-                getter(jp : GetterJoinpointContext) {
+                getter(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'setterOnly'>) {
                     return jp.getValue();
                 }
             }
@@ -828,7 +828,7 @@ describe('AopManager', () => {
         it('should throw on setter aspect on getter only', () => {
             class Aspect {
                 @StaticSetter(TestClass, [ 'getterOnly' ])
-                setter(jp : SetterJoinpointContext) {
+                setter(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'getterOnly'>) {
                     jp.proceed();
                 }
             }
