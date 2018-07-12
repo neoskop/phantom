@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>JoinpointContext | @neoskop/phatom</title>
+	<title>JoinpointContext | @neoskop/phantom</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@neoskop/phatom</a>
+					<a href="../index.html" class="title">@neoskop/phantom</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -59,7 +59,7 @@
 					<a href="joinpointcontext.html">JoinpointContext</a>
 				</li>
 			</ul>
-			<h1>Class JoinpointContext&lt;ARGS, CONTEXT, RESULT&gt;</h1>
+			<h1>Class JoinpointContext&lt;CONTEXT, P, ARGS, RESULT&gt;</h1>
 		</div>
 	</div>
 </header>
@@ -77,10 +77,13 @@
 				<h3>Type parameters</h3>
 				<ul class="tsd-type-parameters">
 					<li>
-						<h4>ARGS<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+						<h4>CONTEXT</h4>
 					</li>
 					<li>
-						<h4>CONTEXT</h4>
+						<h4>P<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">keyof CONTEXT</span></h4>
+					</li>
+					<li>
+						<h4>ARGS<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h4>
 					</li>
 					<li>
 						<h4>RESULT</h4>
@@ -151,7 +154,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L75">manager.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L78">manager.ts:78</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,7 +188,7 @@
 					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ARGS</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L77">manager.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L80">manager.ts:80</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -196,7 +199,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#context">context</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L41">manager.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L43">manager.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,7 +210,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#pointcut">pointcut</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L43">manager.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L45">manager.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -218,7 +221,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#property">property</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L42">manager.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L44">manager.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -228,7 +231,7 @@
 					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">RESULT</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L75">manager.ts:75</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L78">manager.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -238,7 +241,7 @@
 					<div class="tsd-signature tsd-kind-icon">target<span class="tsd-signature-symbol">:</span> <a href="../interfaces/joinpoint.html#function" class="tsd-signature-type">Function</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L81">manager.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L84">manager.ts:84</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -249,13 +252,24 @@
 					<a name="getargument" class="tsd-anchor"></a>
 					<h3>get<wbr>Argument</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[0]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[1]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[2]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[3]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[4]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">5</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[5]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">6</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[6]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">7</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[7]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[8]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">9</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[9]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Argument&lt;Index&gt;<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Index</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ARGS[Index]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L95">manager.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L98">manager.ts:98</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -263,6 +277,193 @@
 									<p>Returns the argument at index <code>index</code></p>
 								</div>
 							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">0</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[0]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L99">manager.ts:99</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">1</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[1]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L100">manager.ts:100</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">2</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[2]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L101">manager.ts:101</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">3</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[3]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L102">manager.ts:102</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">4</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[4]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L103">manager.ts:103</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">5</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[5]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L104">manager.ts:104</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">6</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[6]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L105">manager.ts:105</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">7</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[7]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L106">manager.ts:106</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">8</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[8]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L107">manager.ts:107</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">9</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ARGS[9]</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L108">manager.ts:108</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>index: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L109">manager.ts:109</a></li>
+								</ul>
+							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
@@ -292,7 +493,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L88">manager.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L91">manager.ts:91</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +516,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#getcontext">getContext</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L50">manager.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L52">manager.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -338,7 +539,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#getpointcut">getPointcut</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L64">manager.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L66">manager.ts:66</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -364,7 +565,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="abstractjoinpointcontext.html">AbstractJoinpointContext</a>.<a href="abstractjoinpointcontext.html#getproperty">getProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L57">manager.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L59">manager.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -386,7 +587,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L111">manager.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L126">manager.ts:126</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -411,7 +612,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L127">manager.ts:127</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L142">manager.ts:142</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -433,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L102">manager.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L117">manager.ts:117</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -444,7 +645,7 @@
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
-									<h4>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">keyof ARGS</span></h4>
+									<h4>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">keyof ARGS</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h4>
 								</li>
 							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -470,7 +671,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/fc50030/src/manager.ts#L118">manager.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/neoskop/phantom/blob/d0d2fb2/src/manager.ts#L133">manager.ts:133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -602,6 +803,21 @@
 					<li class=" tsd-kind-interface tsd-has-type-parameter tsd-is-external">
 						<a href="../interfaces/staticpropertypointcutdecorator.html" class="tsd-kind-icon">Static<wbr>Property<wbr>Pointcut<wbr>Decorator</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#argumenttypes" class="tsd-kind-icon">Argument<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#cls" class="tsd-kind-icon">Cls</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#methodproperty" class="tsd-kind-icon">Method<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#property" class="tsd-kind-icon">Property</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#returntype" class="tsd-kind-icon">Return<wbr>Type</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="../globals.html#after" class="tsd-kind-icon">After</a>
 					</li>
@@ -634,6 +850,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-is-external tsd-is-not-exported">
 						<a href="../globals.html#propsfactory" class="tsd-kind-icon">props<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter tsd-is-external">
+						<a href="../globals.html#unique" class="tsd-kind-icon">unique</a>
 					</li>
 				</ul>
 			</nav>
