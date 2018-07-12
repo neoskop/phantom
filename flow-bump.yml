@@ -1,6 +1,8 @@
 options:
     commitMessage: 'chore(release): bump to version %VERSION%'
 scripts:
+    preBump:
+        - yarn run test
     bump:
         - yarn run docs
         - git add docs
