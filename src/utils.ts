@@ -1,7 +1,7 @@
 import { Type } from '@neoskop/annotation-factory';
 import { Joinpoint } from './manager';
 import { Reflection } from './reflection';
-import { Property } from '@neoskop/phantom';
+import { Property } from './metadata';
 
 /**
  * @hidden

@@ -40,23 +40,23 @@ const propsFactory = (cls : Cls<any>, property : string|string[]|RegExp) => ({
 });
 
 export abstract class InstanceMethodPointcut<T> extends Pointcut<T> {
-    readonly cls! : Type<T>;
-    readonly property! : MethodProperty<T>;
+    abstract readonly cls : Type<T>;
+    abstract readonly property : MethodProperty<T>;
 }
 
 export abstract class StaticMethodPointcut<T> extends Pointcut<T> {
-    readonly cls! : T;
-    readonly property! : MethodProperty<T>;
+    abstract readonly cls : T;
+    abstract readonly property : MethodProperty<T>;
 }
 
 export abstract class InstancePropertyPointcut<T> extends Pointcut<T> {
-    readonly cls! : Type<T>;
-    readonly property! : Property<T>;
+    abstract readonly cls : Type<T>;
+    abstract readonly property : Property<T>;
 }
 
 export abstract class StaticPropertyPointcut<T> extends Pointcut<T> {
-    readonly cls! : T;
-    readonly property! : Property<T>;
+    abstract readonly cls : T;
+    abstract readonly property : Property<T>;
 }
 
 /**

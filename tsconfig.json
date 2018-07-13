@@ -59,7 +59,7 @@
       "./node_modules/@types"
     ],
     "paths": {
-      "@neoskop/phantom": [ "src/public_api.ts" ]
+      "@neoskop/phantom": [ "./src/public_api.ts" ]
     }
   },
   "files": [

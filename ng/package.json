@@ -1,0 +1,9 @@
+{
+  "name": "@neoskop/phantom/ng",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "../src/ng_module.ts"
+    },
+    "dest": "../dist/ng"
+  }
+}

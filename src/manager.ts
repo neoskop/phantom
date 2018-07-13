@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/typescript/lib/lib.es2017.d.ts" />
 import { Annotator, Type } from '@neoskop/annotation-factory';
 import {
     After,
