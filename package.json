@@ -1,6 +1,6 @@
 {
   "name": "@neoskop/phantom",
-  "version": "1.2.0-rc.0",
+  "version": "1.2.0-rc.1",
   "description": "An AOP (aspect oriented programming) framework",
   "main": "bundle/phantom.bundle.js",
   "module": "dist/public_api.js",
