@@ -1,6 +1,18 @@
 import { Type } from '@angular/core';
 import { unique } from './utils';
 
+export const REFLECTION_PROPERTY_BLACKLIST = new Set([
+    '__defineGetter__',
+    '__defineSetter__',
+    'hasOwnProperty',
+    '__lookupGetter__',
+    '__lookupSetter__',
+    'isPrototypeOf',
+    'propertyIsEnumerable',
+    '__proto__',
+    'toLocaleString'
+]);
+
 /**
  * @hidden
  */
@@ -20,7 +32,7 @@ export class Reflection {
     static getOwnClassMethods(cls : Type<any>) : string[] {
         const methods : string[] = [];
         
-        for(const method of Object.keys(cls.prototype)) {
+        for(const method of Object.keys(Object.getOwnPropertyDescriptors(cls.prototype)).filter(key => !REFLECTION_PROPERTY_BLACKLIST.has(key))) {
             if('constructor' === method) continue;
             methods.push(method);
         }
