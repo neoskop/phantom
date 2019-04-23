@@ -42,8 +42,8 @@ describe('Reflection', () => {
     
     describe('getAllClassMethods', () => {
         it('should return all class methods', () => {
-            expect(Reflection.getAllClassMethods(A)).to.be.eql([ 'methodA' ]);
-            expect(Reflection.getAllClassMethods(B)).to.be.eql([ 'methodB', 'methodA' ]);
+            expect(Reflection.getAllClassMethods(A)).to.be.eql([ 'methodA', 'toString', 'valueOf' ]);
+            expect(Reflection.getAllClassMethods(B)).to.be.eql([ 'methodB', 'methodA', 'toString', 'valueOf' ]);
         });
     });
     

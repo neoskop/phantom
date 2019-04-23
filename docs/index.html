@@ -77,10 +77,9 @@
 					<a href="https://coveralls.io/github/neoskop/phantom?branch=develop"><img src="https://coveralls.io/repos/github/neoskop/phantom/badge.svg?branch=develop" alt="Test coverage develop"></a>
 				<a href="https://snyk.io/test/github/neoskop/phantom/develop"><img src="https://snyk.io/test/github/neoskop/phantom/develop/badge.svg" alt="Known Vulnerabilities develop"></a></p>
 				<h2 id="installation">Installation</h2>
-				<pre><code class="lang-sh">yarn add @neoskop/phantom
-</code></pre>
+				<pre><code class="language-sh">yarn add @neoskop/phantom</code></pre>
 				<h2 id="usage">Usage</h2>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { AopManager, Before, After, JoinpointContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'@neoskop/phantom'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AopManager, Before, After, JoinpointContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'@neoskop/phantom'</span>;
 
 <span class="hljs-keyword">class</span> TestClass {
     foo(arg : <span class="hljs-built_in">string</span>) {
@@ -114,14 +113,11 @@ manager.install([ <span class="hljs-keyword">new</span> LoggerAspect() ]);
 
 <span class="hljs-built_in">console</span>.log(instance.bar(<span class="hljs-string">'Bar'</span>)); <span class="hljs-comment">// &gt; TestClass bar [ 'Bar' ]</span>
                                   <span class="hljs-comment">// &lt; TestClass bar bar</span>
-                                  <span class="hljs-comment">// bar</span>
-</code></pre>
+                                  <span class="hljs-comment">// bar</span></code></pre>
 				<h2 id="testing">Testing</h2>
-				<pre><code class="lang-sh">yarn <span class="hljs-built_in">test</span>
-</code></pre>
+				<pre><code class="language-sh">yarn <span class="hljs-built_in">test</span></code></pre>
 				<h2 id="building">Building</h2>
-				<pre><code class="lang-sh">yarn run build
-</code></pre>
+				<pre><code class="language-sh">yarn run build</code></pre>
 				<h2 id="license">License</h2>
 				<p>MIT License</p>
 				<p>Copyright (c) 2018 Neoskop GmbH</p>
@@ -237,6 +233,9 @@ manager.install([ <span class="hljs-keyword">new</span> LoggerAspect() ]);
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#getter" class="tsd-kind-icon">Getter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-external">
+						<a href="globals.html#reflection_property_blacklist" class="tsd-kind-icon">REFLECTION_<wbr>PROPERTY_<wbr>BLACKLIST</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-external">
 						<a href="globals.html#setter" class="tsd-kind-icon">Setter</a>
