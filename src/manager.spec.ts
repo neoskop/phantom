@@ -11,7 +11,8 @@ import {
     BeforeStatic,
     Getter,
     Setter, StaticGetter,
-    StaticSetter
+    StaticSetter,
+    JoinpointShadow
 } from './metadata';
 import { Annotator } from '@neoskop/annotation-factory';
 
@@ -145,9 +146,17 @@ declare class TestClassDeclaration extends ParentClass {
     misc2(...args : any[]) : any;
 }
 
+declare class TestClassJoinpointShadowDeclaration {
+    static staticMethod(arg : string): string;
+
+    method(arg : string): string;
+}
+
 describe('AopManager', () => {
     let TestClass : typeof TestClassDeclaration;
+    let TestClassJoinpointShadow : typeof TestClassJoinpointShadowDeclaration;
     let TestAspect : any;
+    let TestAspectJoinpointShadow : any;
     let manager : AopManager | undefined;
     let instance : TestClassDeclaration;
     
@@ -285,7 +294,33 @@ describe('AopManager', () => {
             staticParentAdvice() {
             }
         }
+
+        class TestClassJoinpointShadow_ implements TestClassJoinpointShadowDeclaration {
+            @JoinpointShadow()
+            static staticMethod(arg : string) {
+                return arg.toUpperCase();
+            }
+
+            @JoinpointShadow()
+            method(arg : string) {
+                return arg.toUpperCase();
+            }
+        }
+
+        class TestAspectJoinpointShadow_ {
+            @AfterStatic(TestClassJoinpointShadow_, 'staticMethod')
+            afterStaticMethod(jp : JoinpointContext<typeof TestClassJoinpointShadow_, 'staticMethod'>) {
+                jp.setResult(jp.getResult() + '+AFTER');
+            }
+            
+            @After(TestClassJoinpointShadow_, 'method')
+            afterMethod(jp : JoinpointContext<TestClassJoinpointShadow_, 'method'>) {
+                jp.setResult(jp.getResult() + '+AFTER');
+            }
+        }
         
+        TestAspectJoinpointShadow = TestAspectJoinpointShadow_;
+        TestClassJoinpointShadow = TestClassJoinpointShadow_;
         TestAspect = _TestAspect;
     });
     
@@ -415,7 +450,17 @@ describe('AopManager', () => {
             instance = new TestClass();
             
             expect(instance.parentTest()).to.be.equal('parentTest');
-        })
+        });
+
+        it('should use inner joinpoint shadow', () => {
+            const origin = TestClassJoinpointShadow.prototype.method;
+            manager!.install([ new TestAspectJoinpointShadow() ]);
+
+            const instance = new TestClassJoinpointShadow();
+
+            expect(instance.method).to.be.equal(origin, 'replaced method');
+            expect(instance.method('foo')).to.be.equal('FOO+AFTER');
+        });
     });
     
     describe('install (instance property)', () => {
@@ -681,6 +726,14 @@ describe('AopManager', () => {
             expect(TestClass.staticAroundTest(true)).to.be.undefined;
             expect(SPIES.staticAround).to.have.been.calledOnce;
             expect(SPIES.staticAroundTest).not.to.have.been.called;
+        });
+
+        it('should use inner joinpoint shadow', () => {
+            const origin = TestClassJoinpointShadow.staticMethod;
+            manager!.install([ new TestAspectJoinpointShadow() ]);
+
+            expect(TestClassJoinpointShadow.staticMethod).to.be.equal(origin, 'replaced method');
+            expect(TestClassJoinpointShadow.staticMethod('foo')).to.be.equal('FOO+AFTER');
         });
     });
     

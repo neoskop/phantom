@@ -8,19 +8,37 @@ import { Property } from './metadata';
  */
 export function createJoinpoint(fn : (this : any, target : Function, ...args : any[]) => any, pointcut : string, proto : any) : Joinpoint {
     const ownPropertyDescriptor = Object.getOwnPropertyDescriptor(proto, pointcut);
-    const origin = ownPropertyDescriptor && ownPropertyDescriptor.value;
-    return proto[ pointcut ] = Object.assign(function(this : any, ...args : any[]) {
-        const target = ownPropertyDescriptor ? ownPropertyDescriptor.value! : Object.getPrototypeOf(proto)[ pointcut ];
+    let origin = ownPropertyDescriptor && ownPropertyDescriptor.value;
+    if(origin && origin.JoinpointShadow) {
+        origin = origin.JoinpointShadow;
+    }
+    const joinpoint = Object.assign(function(this : any, ...args : any[]) {
+        let target = /*ownPropertyDescriptor ? ownPropertyDescriptor.value! :*/ origin || Object.getPrototypeOf(proto)[ pointcut ];
+        if(target.JoinpointShadow) {
+            target = target.JoinpointShadow;
+        }
         return fn.apply(this, [ target, ...args ]);
     }, {
         restore() {
-            if(origin) {
-                proto[ pointcut ] = origin;
+            if(proto[ pointcut ].JoinpointShadow) {
+                if(origin) {
+                    proto[ pointcut ].JoinpointShadow = origin;
+                }
             } else {
-                delete proto[ pointcut ];
+                if(origin) {
+                    proto[ pointcut ] = origin;
+                } else {
+                    delete proto[ pointcut ];
+                }
             }
         }
-    })
+    });
+
+    if(proto[pointcut] && proto[pointcut].JoinpointShadow) {
+        return proto[pointcut].JoinpointShadow = joinpoint;
+    } else {
+        return proto[ pointcut ] = joinpoint;
+    }
 }
 
 /**
