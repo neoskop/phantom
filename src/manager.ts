@@ -74,7 +74,7 @@ export abstract class AbstractJoinpointContext<CONTEXT = any, P extends Pointcut
  */
 export class JoinpointContext<CONTEXT = any,
                             P extends keyof CONTEXT = never,
-                            ARGS extends any = ArgumentTypes<CONTEXT[P]>,
+                            ARGS extends any[] = ArgumentTypes<CONTEXT[P]>,
                             RESULT = ReturnType<CONTEXT[P]>> extends AbstractJoinpointContext<CONTEXT, InstanceMethodPointcut<any>|StaticMethodPointcut<any>> {
     protected result? : RESULT;
     

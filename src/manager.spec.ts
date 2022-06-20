@@ -1,895 +1,976 @@
-import 'mocha';
-import { expect, use } from 'chai';
-import { spy } from 'sinon';
-import { AopManager, GetterJoinpointContext, Joinpoint, JoinpointContext, SetterJoinpointContext } from './manager';
 import {
-    After,
-    AfterStatic,
-    Around,
-    AroundStatic,
-    Before,
-    BeforeStatic,
-    Getter,
-    Setter, StaticGetter,
-    StaticSetter,
-    JoinpointShadow
-} from './metadata';
-import { Annotator } from '@neoskop/annotation-factory';
-
-use(require('sinon-chai'));
+  AopManager,
+  GetterJoinpointContext,
+  Joinpoint,
+  JoinpointContext,
+  SetterJoinpointContext,
+} from "./manager";
+import {
+  After,
+  AfterStatic,
+  Around,
+  AroundStatic,
+  Before,
+  BeforeStatic,
+  Getter,
+  Setter,
+  StaticGetter,
+  StaticSetter,
+  JoinpointShadow,
+} from "./metadata";
+import { Annotator } from "@neoskop/annotation-factory";
 
 const SPIES = {
-    parentParentTest: spy(),
-    parentTest      : spy(),
-    beforeTest      : spy(),
-    afterTest       : spy(),
-    aroundTest      : spy(),
-    before          : spy(),
-    after           : spy(),
-    around          : spy(),
-    parentParent    : spy(),
-    parent          : spy(),
-    staticBeforeTest: spy(),
-    staticAfterTest : spy(),
-    staticAroundTest: spy(),
-    staticBefore    : spy(),
-    staticAfter     : spy(),
-    staticAround    : spy(),
-    staticParentTest: spy(),
-    withoutValue    : spy(),
-    withValue       : spy(),
-    parentValue     : spy(),
-    resetHistory() {
-        this.parentParentTest.resetHistory();
-        this.parentTest.resetHistory();
-        this.beforeTest.resetHistory();
-        this.afterTest.resetHistory();
-        this.aroundTest.resetHistory();
-        this.before.resetHistory();
-        this.after.resetHistory();
-        this.around.resetHistory();
-        this.parentParent.resetHistory();
-        this.parent.resetHistory();
-        this.staticBeforeTest.resetHistory();
-        this.staticAfterTest.resetHistory();
-        this.staticAroundTest.resetHistory();
-        this.staticBefore.resetHistory();
-        this.staticAfter.resetHistory();
-        this.staticAround.resetHistory();
-        this.withoutValue.resetHistory();
-        this.withValue.resetHistory();
-        this.parentValue.resetHistory();
-    }
+  parentParentTest: jest.fn(),
+  parentTest: jest.fn(),
+  beforeTest: jest.fn(),
+  afterTest: jest.fn(),
+  aroundTest: jest.fn(),
+  before: jest.fn(),
+  after: jest.fn(),
+  around: jest.fn(),
+  parentParent: jest.fn(),
+  parent: jest.fn(),
+  staticBeforeTest: jest.fn(),
+  staticAfterTest: jest.fn(),
+  staticAroundTest: jest.fn(),
+  staticBefore: jest.fn(),
+  staticAfter: jest.fn(),
+  staticAround: jest.fn(),
+  staticParentTest: jest.fn(),
+  withoutValue: jest.fn(),
+  withValue: jest.fn(),
+  parentValue: jest.fn(),
+  mockReset() {
+    this.parentParentTest.mockReset();
+    this.parentTest.mockReset();
+    this.beforeTest.mockReset();
+    this.afterTest.mockReset();
+    this.aroundTest.mockReset();
+    this.before.mockReset();
+    this.after.mockReset();
+    this.around.mockReset();
+    this.parentParent.mockReset();
+    this.parent.mockReset();
+    this.staticBeforeTest.mockReset();
+    this.staticAfterTest.mockReset();
+    this.staticAroundTest.mockReset();
+    this.staticBefore.mockReset();
+    this.staticAfter.mockReset();
+    this.staticAround.mockReset();
+    this.withoutValue.mockReset();
+    this.withValue.mockReset();
+    this.parentValue.mockReset();
+  },
 };
 
-const Misc = Annotator.makePropDecorator('Misc');
+const Misc = Annotator.makePropDecorator("Misc");
 
 class ParentParentClass {
-    $parentParent : any;
-    get parentParent() {
-        return this.$parentParent;
-    }
-    set parentParent(v : any) {
-        this.$parentParent = v;
-    }
-    
-    static $parentParent : any;
-    static get parentParent() {
-        return this.$parentParent;
-    }
-    static set parentParent(v : any) {
-        this.$parentParent = v;
-    }
-    
-    parentParentTest(...args : any[]) {
-        SPIES.parentParentTest(...args);
-        return 'parentParentTest';
-    }
+  $parentParent: any;
+  get parentParent() {
+    return this.$parentParent;
+  }
+  set parentParent(v: any) {
+    this.$parentParent = v;
+  }
+
+  static $parentParent: any;
+  static get parentParent() {
+    return this.$parentParent;
+  }
+  static set parentParent(v: any) {
+    this.$parentParent = v;
+  }
+
+  parentParentTest(...args: any[]) {
+    SPIES.parentParentTest(...args);
+    return "parentParentTest";
+  }
 }
 
 class ParentClass extends ParentParentClass {
-    $parent : any;
-    get parent() {
-        return this.$parent;
-    }
-    set parent(v : any) {
-        this.$parent = v;
-    }
-    
-    static $parent : any;
-    static get parent() {
-        return this.$parent;
-    }
-    static set parent(v : any) {
-        this.$parent = v;
-    }
-    
-    static staticParentTest(...args : any[]) {
-        SPIES.staticParentTest(...args);
-        return 'staticParentTest';
-    }
-    
-    parentTest(...args : any[]) {
-        SPIES.parentTest(...args);
-        return 'parentTest';
-    }
+  $parent: any;
+  get parent() {
+    return this.$parent;
+  }
+  set parent(v: any) {
+    this.$parent = v;
+  }
+
+  static $parent: any;
+  static get parent() {
+    return this.$parent;
+  }
+  static set parent(v: any) {
+    this.$parent = v;
+  }
+
+  static staticParentTest(...args: any[]) {
+    SPIES.staticParentTest(...args);
+    return "staticParentTest";
+  }
+
+  parentTest(...args: any[]) {
+    SPIES.parentTest(...args);
+    return "parentTest";
+  }
 }
 
 declare class TestClassDeclaration extends ParentClass {
-    withoutValue : any;
-    withValue : any;
-    
-    static withoutValue : any;
-    static withValue : any;
-    
-    readonly getterOnly : any;
-    setterOnly : any;
-    
-    static readonly getterOnly : any;
-    static setterOnly : any;
-    
-    
-    static staticBeforeTest(...args : any[]) : any;
-    
-    static staticAfterTest(...args : any[]) : any;
-    
-    static staticAroundTest(...args : any[]) : any;
-    
-    beforeTest(intercept?: boolean|string, name?: string, ...args : any[]) : any;
-    
-    afterTest(...args : any[]) : any;
-    
-    aroundTest(...args : any[]) : any;
-    
-    misc(...args : any[]) : any;
-    
-    misc2(...args : any[]) : any;
+  withoutValue: any;
+  withValue: any;
+
+  static withoutValue: any;
+  static withValue: any;
+
+  readonly getterOnly: any;
+  setterOnly: any;
+
+  static readonly getterOnly: any;
+  static setterOnly: any;
+
+  static staticBeforeTest(...args: any[]): any;
+
+  static staticAfterTest(...args: any[]): any;
+
+  static staticAroundTest(...args: any[]): any;
+
+  beforeTest(intercept?: boolean | string, name?: string, ...args: any[]): any;
+
+  afterTest(...args: any[]): any;
+
+  aroundTest(...args: any[]): any;
+
+  misc(...args: any[]): any;
+
+  misc2(...args: any[]): any;
 }
 
 declare class TestClassJoinpointShadowDeclaration {
-    static staticMethod(arg : string): string;
+  static staticMethod(arg: string): string;
 
-    method(arg : string): string;
+  method(arg: string): string;
 }
 
-describe('AopManager', () => {
-    let TestClass : typeof TestClassDeclaration;
-    let TestClassJoinpointShadow : typeof TestClassJoinpointShadowDeclaration;
-    let TestAspect : any;
-    let TestAspectJoinpointShadow : any;
-    let manager : AopManager | undefined;
-    let instance : TestClassDeclaration;
-    
-    beforeEach(() => {
-        manager = new AopManager();
-        TestClass = class extends ParentClass {
-            withoutValue : any;
-            withValue : any = 'val123';
-            
-            static withoutValue : any;
-            static withValue : any = 'val123';
-            
-            get getterOnly() {
-                return 'getterOnlyValue';
-            }
-            
-            set setterOnly(v : any) {
-                (this as any).$setterOnly = v;
-            }
-            
-            static get getterOnly() {
-                return 'getterOnlyValue';
-            }
-            
-            static set setterOnly(v : any) {
-                (this as any).$setterOnly = v;
-            }
-            
-            static staticBeforeTest(...args : any[]) {
-                SPIES.staticBeforeTest(...args);
-                return 'staticBeforeTest';
-            }
-            
-            static staticAfterTest(...args : any[]) {
-                SPIES.staticAfterTest(...args);
-                return 'staticAfterTest';
-            }
-            
-            static staticAroundTest(...args : any[]) {
-                SPIES.staticAroundTest(...args);
-                return 'staticAroundTest';
-            }
-            
-            beforeTest(...args : any[]) {
-                SPIES.beforeTest(...args);
-                return 'beforeTest';
-            }
-            
-            afterTest(...args : any[]) {
-                SPIES.afterTest(...args);
-                return 'afterTest';
-            }
-            
-            aroundTest(...args : any[]) {
-                SPIES.aroundTest(...args);
-                return 'aroundTest';
-            }
-            
-            misc() {
-            }
-            
-            misc2() {
-            }
-        };
-        
-        class _TestAspect {
-            @Before(TestClass, /misc/)
-            beforeAny(_jp : JoinpointContext<TestClassDeclaration, 'misc'>) {
-            }
+describe("AopManager", () => {
+  let TestClass: typeof TestClassDeclaration;
+  let TestClassJoinpointShadow: typeof TestClassJoinpointShadowDeclaration;
+  let TestAspect: any;
+  let TestAspectJoinpointShadow: any;
+  let manager: AopManager | undefined;
+  let instance: TestClassDeclaration;
 
-            @Before(TestClass, [ 'misc', 'misc2' ])
-            beforeSome(_jp : JoinpointContext<TestClassDeclaration, 'misc' | 'misc2'>) {
-            }
+  beforeEach(() => {
+    manager = new AopManager();
+    TestClass = class extends ParentClass {
+      withoutValue: any;
+      withValue: any = "val123";
 
-            @Misc()
-            @Before(TestClass, 'beforeTest')
-            beforeAdvice(jp : JoinpointContext<TestClassDeclaration, 'beforeTest'>) {
-                SPIES.before(jp);
-                if(true === jp.getArgument(0)) {
-                    jp.setArgument(1, 'foobar')
-                }
-            }
+      static withoutValue: any;
+      static withValue: any = "val123";
 
-            @After(TestClass, 'afterTest')
-            afterAdvice(jp : JoinpointContext<TestClassDeclaration, 'afterTest'>) {
-                SPIES.after(jp);
-                if(true === jp.getArgument(0)) {
-                    jp.setResult('foobar');
-                }
-            }
+      get getterOnly() {
+        return "getterOnlyValue";
+      }
 
-            @Around(TestClass, 'aroundTest')
-            aroundAdvice(jp : JoinpointContext<TestClassDeclaration, 'aroundTest'>) {
-                SPIES.around(jp);
-                if(!jp.getArgument(0)) {
-                    return jp.proceed();
-                }
-            }
+      set setterOnly(v: any) {
+        (this as any).$setterOnly = v;
+      }
 
-            @Before(TestClass, 'parentTest')
-            parentAdvice(jp : JoinpointContext<TestClassDeclaration, 'parentTest'>) {
-                SPIES.parent(jp);
-            }
+      static get getterOnly() {
+        return "getterOnlyValue";
+      }
 
-            @Before(TestClass, 'parentParentTest')
-            parentParentAdvice(jp : JoinpointContext<TestClassDeclaration, 'parentParentTest'>) {
-                SPIES.parentParent(jp);
-            }
+      static set setterOnly(v: any) {
+        (this as any).$setterOnly = v;
+      }
 
-            @BeforeStatic(TestClass, 'staticBeforeTest')
-            staticBeforeAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticBeforeTest'>) {
-                SPIES.staticBefore(jp);
-                if(true === jp.getArgument(0)) {
-                    jp.setArgument(1, 'foobar')
-                }
-            }
+      static staticBeforeTest(...args: any[]) {
+        SPIES.staticBeforeTest(...args);
+        return "staticBeforeTest";
+      }
 
-            @AfterStatic(TestClass, 'staticAfterTest')
-            staticAfterAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticAfterTest'>) {
-                SPIES.staticAfter(jp);
-                if(true === jp.getArgument(0)) {
-                    jp.setResult('foobar');
-                }
-            }
+      static staticAfterTest(...args: any[]) {
+        SPIES.staticAfterTest(...args);
+        return "staticAfterTest";
+      }
 
-            @AroundStatic(TestClass, 'staticAroundTest')
-            staticAroundAdvice(jp : JoinpointContext<typeof TestClassDeclaration, 'staticAroundTest'>) {
-                SPIES.staticAround(jp);
-                if(!jp.getArgument(0)) {
-                    return jp.proceed();
-                }
-            }
+      static staticAroundTest(...args: any[]) {
+        SPIES.staticAroundTest(...args);
+        return "staticAroundTest";
+      }
 
-            @BeforeStatic(TestClass, 'staticParentTest')
-            staticParentAdvice() {
-            }
+      beforeTest(...args: any[]) {
+        SPIES.beforeTest(...args);
+        return "beforeTest";
+      }
+
+      afterTest(...args: any[]) {
+        SPIES.afterTest(...args);
+        return "afterTest";
+      }
+
+      aroundTest(...args: any[]) {
+        SPIES.aroundTest(...args);
+        return "aroundTest";
+      }
+
+      misc() {}
+
+      misc2() {}
+    };
+
+    class _TestAspect {
+      @Before(TestClass, /misc/)
+      beforeAny(_jp: JoinpointContext<TestClassDeclaration, "misc">) {}
+
+      @Before(TestClass, ["misc", "misc2"])
+      beforeSome(
+        _jp: JoinpointContext<TestClassDeclaration, "misc" | "misc2">
+      ) {}
+
+      @Misc()
+      @Before(TestClass, "beforeTest")
+      beforeAdvice(jp: JoinpointContext<TestClassDeclaration, "beforeTest">) {
+        SPIES.before(jp);
+        if (true === jp.getArgument(0)) {
+          jp.setArgument(1, "foobar");
+        }
+      }
+
+      @After(TestClass, "afterTest")
+      afterAdvice(jp: JoinpointContext<TestClassDeclaration, "afterTest">) {
+        SPIES.after(jp);
+        if (true === jp.getArgument(0)) {
+          jp.setResult("foobar");
+        }
+      }
+
+      @Around(TestClass, "aroundTest")
+      aroundAdvice(jp: JoinpointContext<TestClassDeclaration, "aroundTest">) {
+        SPIES.around(jp);
+        if (!jp.getArgument(0)) {
+          return jp.proceed();
+        }
+      }
+
+      @Before(TestClass, "parentTest")
+      parentAdvice(jp: JoinpointContext<TestClassDeclaration, "parentTest">) {
+        SPIES.parent(jp);
+      }
+
+      @Before(TestClass, "parentParentTest")
+      parentParentAdvice(
+        jp: JoinpointContext<TestClassDeclaration, "parentParentTest">
+      ) {
+        SPIES.parentParent(jp);
+      }
+
+      @BeforeStatic(TestClass, "staticBeforeTest")
+      staticBeforeAdvice(
+        jp: JoinpointContext<typeof TestClassDeclaration, "staticBeforeTest">
+      ) {
+        SPIES.staticBefore(jp);
+        if (true === jp.getArgument(0)) {
+          jp.setArgument(1, "foobar");
+        }
+      }
+
+      @AfterStatic(TestClass, "staticAfterTest")
+      staticAfterAdvice(
+        jp: JoinpointContext<typeof TestClassDeclaration, "staticAfterTest">
+      ) {
+        SPIES.staticAfter(jp);
+        if (true === jp.getArgument(0)) {
+          jp.setResult("foobar");
+        }
+      }
+
+      @AroundStatic(TestClass, "staticAroundTest")
+      staticAroundAdvice(
+        jp: JoinpointContext<typeof TestClassDeclaration, "staticAroundTest">
+      ) {
+        SPIES.staticAround(jp);
+        if (!jp.getArgument(0)) {
+          return jp.proceed();
+        }
+      }
+
+      @BeforeStatic(TestClass, "staticParentTest")
+      staticParentAdvice() {}
+    }
+
+    class TestClassJoinpointShadow_
+      implements TestClassJoinpointShadowDeclaration
+    {
+      @JoinpointShadow()
+      static staticMethod(arg: string) {
+        return arg.toUpperCase();
+      }
+
+      @JoinpointShadow()
+      method(arg: string) {
+        return arg.toUpperCase();
+      }
+    }
+
+    class TestAspectJoinpointShadow_ {
+      @AfterStatic(TestClassJoinpointShadow_, "staticMethod")
+      afterStaticMethod(
+        jp: JoinpointContext<typeof TestClassJoinpointShadow_, "staticMethod">
+      ) {
+        jp.setResult(jp.getResult() + "+AFTER");
+      }
+
+      @After(TestClassJoinpointShadow_, "method")
+      afterMethod(jp: JoinpointContext<TestClassJoinpointShadow_, "method">) {
+        jp.setResult(jp.getResult() + "+AFTER");
+      }
+    }
+
+    TestAspectJoinpointShadow = TestAspectJoinpointShadow_;
+    TestClassJoinpointShadow = TestClassJoinpointShadow_;
+    TestAspect = _TestAspect;
+  });
+
+  afterEach(() => {
+    SPIES.mockReset();
+  });
+
+  describe("install (instance)", () => {
+    it("should replace methods on prototype", () => {
+      const beforeOrigin = TestClass.prototype.beforeTest;
+      const afterOrigin = TestClass.prototype.afterTest;
+      const aroundOrigin = TestClass.prototype.aroundTest;
+
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(instance.beforeTest).toEqual(TestClass.prototype.beforeTest);
+      expect(instance.afterTest).toEqual(TestClass.prototype.afterTest);
+      expect(instance.aroundTest).toEqual(TestClass.prototype.aroundTest);
+
+      expect(instance.beforeTest).not.toEqual(beforeOrigin);
+      expect(instance.afterTest).not.toEqual(afterOrigin);
+      expect(instance.aroundTest).not.toEqual(aroundOrigin);
+    });
+
+    it("should restore methods on prototype", () => {
+      const beforeOrigin = TestClass.prototype.beforeTest;
+      const afterOrigin = TestClass.prototype.afterTest;
+      const aroundOrigin = TestClass.prototype.aroundTest;
+
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      (instance.beforeTest as Joinpoint).restore();
+      (instance.afterTest as Joinpoint).restore();
+      (instance.aroundTest as Joinpoint).restore();
+
+      expect(instance.beforeTest).toEqual(beforeOrigin);
+      expect(instance.afterTest).toEqual(afterOrigin);
+      expect(instance.aroundTest).toEqual(aroundOrigin);
+    });
+
+    it("should set aspect on current prototype when overwriting parent property", () => {
+      const parentOrigin = TestClass.prototype.parentTest;
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass.prototype, "parentTest")
+      ).toBeUndefined();
+
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass.prototype, "parentTest")
+      ).not.toBeUndefined();
+
+      (instance.parentTest as Joinpoint).restore();
+
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass.prototype, "parentTest")
+      ).toBeUndefined();
+      expect(instance.parentTest).toEqual(parentOrigin);
+    });
+
+    it("should call before advice", () => {
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(instance.beforeTest("a", "b", "c")).toEqual("beforeTest");
+
+      expect(SPIES.before).toHaveBeenCalledTimes(1);
+      expect(SPIES.beforeTest).toHaveBeenCalledWith("a", "b", "c");
+      // expect(SPIES.before).to.have.been.calledBefore(SPIES.beforeTest);
+
+      const jp: JoinpointContext<TestClassDeclaration, "beforeTest"> =
+        SPIES.before.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(instance);
+      expect(jp.getProperty()).toEqual("beforeTest");
+      expect(jp.getPointcut()).toBeInstanceOf(Before);
+
+      SPIES.mockReset();
+
+      instance.beforeTest(true);
+      expect(SPIES.beforeTest).toHaveBeenCalledWith(true, "foobar");
+    });
+
+    it("should call after advice", () => {
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(instance.afterTest()).toEqual("afterTest");
+
+      expect(SPIES.after).toHaveBeenCalledTimes(1);
+      expect(SPIES.afterTest).toHaveBeenCalledTimes(1);
+      // expect(SPIES.afterTest).to.have.been.calledBefore(SPIES.after);
+
+      const jp: JoinpointContext<TestClassDeclaration, "afterTest"> =
+        SPIES.after.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(instance);
+      expect(jp.getProperty()).toEqual("afterTest");
+      expect(jp.getPointcut()).toBeInstanceOf(After);
+
+      SPIES.mockReset();
+
+      expect(instance.afterTest(true)).toEqual("foobar");
+      expect(SPIES.afterTest).toHaveBeenCalledWith(true);
+    });
+
+    it("should call around advice", () => {
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(instance.aroundTest()).toEqual("aroundTest");
+
+      expect(SPIES.around).toHaveBeenCalledTimes(1);
+      expect(SPIES.aroundTest).toHaveBeenCalledTimes(1);
+      // expect(SPIES.around).to.have.been.calledBefore(SPIES.aroundTest);
+
+      const jp: JoinpointContext<TestClassDeclaration, "aroundTest"> =
+        SPIES.around.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(instance);
+      expect(jp.getProperty()).toEqual("aroundTest");
+      expect(jp.getPointcut()).toBeInstanceOf(Around);
+
+      SPIES.mockReset();
+
+      expect(instance.aroundTest(true)).toBeUndefined();
+      expect(SPIES.around).toHaveBeenCalledTimes(1);
+      expect(SPIES.aroundTest).not.toHaveBeenCalled();
+    });
+
+    it("should call parent property", () => {
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(instance.parentTest()).toEqual("parentTest");
+    });
+
+    it("should use inner joinpoint shadow", () => {
+      const origin = TestClassJoinpointShadow.prototype.method;
+      manager!.install([new TestAspectJoinpointShadow()]);
+
+      const instance = new TestClassJoinpointShadow();
+
+      expect(instance.method).toEqual(origin);
+      expect(instance.method("foo")).toEqual("FOO+AFTER");
+    });
+  });
+
+  describe("install (instance property)", () => {
+    const setterAdviceWithout = jest.fn();
+    const getterAdviceWithout = jest.fn();
+    const setterAdviceWith = jest.fn();
+    const getterAdviceWith = jest.fn();
+    it("should set and get standard values", () => {
+      class Aspect {
+        @Setter(TestClass, "withoutValue")
+        setterAdviceWithout(
+          jp: SetterJoinpointContext<TestClassDeclaration, "withoutValue">
+        ) {
+          setterAdviceWithout(jp);
+          jp.proceed();
         }
 
-        class TestClassJoinpointShadow_ implements TestClassJoinpointShadowDeclaration {
-            @JoinpointShadow()
-            static staticMethod(arg : string) {
-                return arg.toUpperCase();
-            }
-
-            @JoinpointShadow()
-            method(arg : string) {
-                return arg.toUpperCase();
-            }
+        @Getter(TestClass, "withoutValue")
+        getterAdviceWithout(
+          jp: GetterJoinpointContext<TestClassDeclaration, "withoutValue">
+        ) {
+          getterAdviceWithout(jp);
+          return jp.getValue();
+        }
+        @Setter(TestClass, "withValue")
+        setterAdviceWith(
+          jp: SetterJoinpointContext<TestClassDeclaration, "withValue">
+        ) {
+          setterAdviceWith(jp);
+          if (jp.getArgument()) {
+            jp.proceed();
+          }
         }
 
-        class TestAspectJoinpointShadow_ {
-            @AfterStatic(TestClassJoinpointShadow_, 'staticMethod')
-            afterStaticMethod(jp : JoinpointContext<typeof TestClassJoinpointShadow_, 'staticMethod'>) {
-                jp.setResult(jp.getResult() + '+AFTER');
-            }
-            
-            @After(TestClassJoinpointShadow_, 'method')
-            afterMethod(jp : JoinpointContext<TestClassJoinpointShadow_, 'method'>) {
-                jp.setResult(jp.getResult() + '+AFTER');
-            }
+        @Getter(TestClass, "withValue")
+        getterAdviceWith(
+          jp: GetterJoinpointContext<TestClassDeclaration, "withValue">
+        ) {
+          getterAdviceWith(jp);
+          const value = jp.getValue();
+          return value;
         }
-        
-        TestAspectJoinpointShadow = TestAspectJoinpointShadow_;
-        TestClassJoinpointShadow = TestClassJoinpointShadow_;
-        TestAspect = _TestAspect;
+      }
+      manager!.install([new Aspect()]);
+      instance = new TestClass();
+
+      expect(setterAdviceWithout).not.toHaveBeenCalled();
+      expect(getterAdviceWithout).not.toHaveBeenCalled();
+      expect(setterAdviceWith).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWith).not.toHaveBeenCalled();
+
+      expect(instance.withoutValue).toBeUndefined();
+      expect(instance.withValue).toEqual("val123");
+
+      expect(setterAdviceWithout).not.toHaveBeenCalled();
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(setterAdviceWith).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWith).toHaveBeenCalledTimes(1);
+
+      instance.withoutValue = "123";
+      instance.withValue = "456";
+
+      expect(setterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(setterAdviceWith).toHaveBeenCalledTimes(2);
+      expect(getterAdviceWith).toHaveBeenCalledTimes(1);
+
+      expect(instance.withoutValue).toEqual("123");
+      expect(instance.withValue).toEqual("456");
+
+      expect(setterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(2);
+      expect(setterAdviceWith).toHaveBeenCalledTimes(2);
+      expect(getterAdviceWith).toHaveBeenCalledTimes(2);
+
+      instance.withValue = false;
+
+      expect(instance.withValue).toEqual("456");
     });
-    
-    afterEach(() => {
-        SPIES.resetHistory();
+
+    it("should use parent accessors", () => {
+      const setterParent = jest.fn();
+      const getterParent = jest.fn();
+      const setterParentParent = jest.fn();
+      const getterParentParent = jest.fn();
+      class Aspect {
+        @Setter(TestClass, "parent")
+        setterParent(
+          jp: SetterJoinpointContext<TestClassDeclaration, "parent">
+        ) {
+          setterParent(jp);
+          jp.proceed();
+        }
+
+        @Getter(TestClass, "parent")
+        getterParent(
+          jp: GetterJoinpointContext<TestClassDeclaration, "parent">
+        ) {
+          getterParent(jp);
+          return jp.getValue();
+        }
+
+        @Setter(TestClass, "parentParent")
+        setterParentParent(
+          jp: SetterJoinpointContext<TestClassDeclaration, "parentParent">
+        ) {
+          setterParentParent(jp);
+          jp.proceed();
+        }
+
+        @Getter(TestClass, "parentParent")
+        getterParentParent(
+          jp: GetterJoinpointContext<TestClassDeclaration, "parentParent">
+        ) {
+          getterParentParent(jp);
+          return jp.getValue();
+        }
+      }
+      manager!.install([new Aspect()]);
+      instance = new TestClass();
+
+      expect(setterParent).not.toHaveBeenCalled();
+      expect(getterParent).not.toHaveBeenCalled();
+      expect(setterParentParent).not.toHaveBeenCalled();
+      expect(getterParentParent).not.toHaveBeenCalled();
+
+      expect(instance.parent).toBeUndefined();
+      expect(instance.parentParent).toBeUndefined();
+
+      expect(setterParent).not.toHaveBeenCalled();
+      expect(getterParent).toHaveBeenCalledTimes(1);
+      expect(setterParentParent).not.toHaveBeenCalled();
+      expect(getterParentParent).toHaveBeenCalledTimes(1);
+
+      instance.parent = "p";
+      instance.parentParent = "pp";
+
+      expect(setterParent).toHaveBeenCalledTimes(1);
+      expect(getterParent).toHaveBeenCalledTimes(1);
+      expect(setterParentParent).toHaveBeenCalledTimes(1);
+      expect(getterParentParent).toHaveBeenCalledTimes(1);
+
+      expect(instance.$parent).toEqual("p");
+      expect(instance.$parentParent).toEqual("pp");
+      expect(instance.parent).toEqual("p");
+      expect(instance.parentParent).toEqual("pp");
     });
-    
-    describe('install (instance)', () => {
-        it('should replace methods on prototype', () => {
-            const beforeOrigin = TestClass.prototype.beforeTest;
-            const afterOrigin = TestClass.prototype.afterTest;
-            const aroundOrigin = TestClass.prototype.aroundTest;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(instance.beforeTest).to.be.equal(TestClass.prototype.beforeTest);
-            expect(instance.afterTest).to.be.equal(TestClass.prototype.afterTest);
-            expect(instance.aroundTest).to.be.equal(TestClass.prototype.aroundTest);
-            
-            expect(instance.beforeTest).not.to.be.equal(beforeOrigin);
-            expect(instance.afterTest).not.to.be.equal(afterOrigin);
-            expect(instance.aroundTest).not.to.be.equal(aroundOrigin);
-        });
-        
-        it('should restore methods on prototype', () => {
-            const beforeOrigin = TestClass.prototype.beforeTest;
-            const afterOrigin = TestClass.prototype.afterTest;
-            const aroundOrigin = TestClass.prototype.aroundTest;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            (instance.beforeTest as Joinpoint).restore();
-            (instance.afterTest as Joinpoint).restore();
-            (instance.aroundTest as Joinpoint).restore();
-            
-            expect(instance.beforeTest).to.be.equal(beforeOrigin);
-            expect(instance.afterTest).to.be.equal(afterOrigin);
-            expect(instance.aroundTest).to.be.equal(aroundOrigin);
-        });
-        
-        it('should set aspect on current prototype when overwriting parent property', () => {
-            const parentOrigin = TestClass.prototype.parentTest;
-            expect(Object.getOwnPropertyDescriptor(TestClass.prototype, 'parentTest')).to.be.undefined;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(Object.getOwnPropertyDescriptor(TestClass.prototype, 'parentTest')).not.to.be.undefined;
-            
-            (instance.parentTest as Joinpoint).restore();
-            
-            expect(Object.getOwnPropertyDescriptor(TestClass.prototype, 'parentTest')).to.be.undefined;
-            expect(instance.parentTest).to.be.equal(parentOrigin);
-        });
-        
-        it('should call before advice', () => {
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(instance.beforeTest('a', 'b', 'c')).to.be.equal('beforeTest');
-            
-            expect(SPIES.before).to.have.been.calledOnce;
-            expect(SPIES.beforeTest).to.have.been.calledOnceWith('a', 'b', 'c');
-            expect(SPIES.before).to.have.been.calledBefore(SPIES.beforeTest);
-            
-            const jp : JoinpointContext<TestClassDeclaration, 'beforeTest'> = SPIES.before.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(instance);
-            expect(jp.getProperty()).to.be.equal('beforeTest');
-            expect(jp.getPointcut()).to.be.instanceOf(Before);
-            
-            SPIES.resetHistory();
-            
-            instance.beforeTest(true);
-            expect(SPIES.beforeTest).to.have.been.calledOnceWith(true, 'foobar');
-        });
-        
-        it('should call after advice', () => {
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(instance.afterTest()).to.be.equal('afterTest');
-            
-            expect(SPIES.after).to.have.been.calledOnce;
-            expect(SPIES.afterTest).to.have.been.calledOnce;
-            expect(SPIES.afterTest).to.have.been.calledBefore(SPIES.after);
-            
-            const jp : JoinpointContext<TestClassDeclaration, 'afterTest'> = SPIES.after.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(instance);
-            expect(jp.getProperty()).to.be.equal('afterTest');
-            expect(jp.getPointcut()).to.be.instanceOf(After);
-            
-            SPIES.resetHistory();
-            
-            expect(instance.afterTest(true)).to.be.equal('foobar');
-            expect(SPIES.afterTest).to.have.been.calledOnceWith(true);
-        });
-        
-        it('should call around advice', () => {
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(instance.aroundTest()).to.be.equal('aroundTest');
-            
-            expect(SPIES.around).to.have.been.calledOnce;
-            expect(SPIES.aroundTest).to.have.been.calledOnce;
-            expect(SPIES.around).to.have.been.calledBefore(SPIES.aroundTest);
-            
-            const jp : JoinpointContext<TestClassDeclaration, 'aroundTest'> = SPIES.around.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(instance);
-            expect(jp.getProperty()).to.be.equal('aroundTest');
-            expect(jp.getPointcut()).to.be.instanceOf(Around);
-            
-            SPIES.resetHistory();
-            
-            expect(instance.aroundTest(true)).to.be.undefined;
-            expect(SPIES.around).to.have.been.calledOnce;
-            expect(SPIES.aroundTest).not.to.have.been.called;
-        });
-        
-        it('should call parent property', () => {
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(instance.parentTest()).to.be.equal('parentTest');
-        });
 
-        it('should use inner joinpoint shadow', () => {
-            const origin = TestClassJoinpointShadow.prototype.method;
-            manager!.install([ new TestAspectJoinpointShadow() ]);
+    it("should throw on getter aspect on setter only", () => {
+      class Aspect {
+        @Getter(TestClass, "setterOnly")
+        getter(jp: GetterJoinpointContext<TestClassDeclaration, "setterOnly">) {
+          return jp.getValue();
+        }
+      }
 
-            const instance = new TestClassJoinpointShadow();
-
-            expect(instance.method).to.be.equal(origin, 'replaced method');
-            expect(instance.method('foo')).to.be.equal('FOO+AFTER');
-        });
+      expect(() => {
+        manager!.install([new Aspect()]);
+      }).toThrow("Cannot install getter, only setter available");
     });
-    
-    describe('install (instance property)', () => {
-        const setterAdviceWithout = spy();
-        const getterAdviceWithout = spy();
-        const setterAdviceWith = spy();
-        const getterAdviceWith = spy();
-        it('should set and get standard values', () => {
-            class Aspect {
-                @Setter(TestClass, 'withoutValue')
-                setterAdviceWithout(jp : SetterJoinpointContext<TestClassDeclaration, 'withoutValue'>) {
-                    setterAdviceWithout(jp);
-                    jp.proceed();
-                }
-    
-                @Getter(TestClass, 'withoutValue')
-                getterAdviceWithout(jp : GetterJoinpointContext<TestClassDeclaration, 'withoutValue'>) {
-                    getterAdviceWithout(jp);
-                    return jp.getValue();
-                }
-                @Setter(TestClass, 'withValue')
-                setterAdviceWith(jp : SetterJoinpointContext<TestClassDeclaration, 'withValue'>) {
-                    setterAdviceWith(jp);
-                    if(jp.getArgument()) {
-                        jp.proceed();
-                    }
-                }
-    
-                @Getter(TestClass, 'withValue')
-                getterAdviceWith(jp : GetterJoinpointContext<TestClassDeclaration, 'withValue'>) {
-                    getterAdviceWith(jp);
-                    const value = jp.getValue();
-                    return value;
-                }
-            }
-            manager!.install([ new Aspect() ]);
-            instance = new TestClass();
-            
-            expect(setterAdviceWithout).not.to.have.been.called;
-            expect(getterAdviceWithout).not.to.have.been.called;
-            expect(setterAdviceWith).to.have.been.calledOnce;
-            expect(getterAdviceWith).not.to.have.been.called;
-            
-            expect(instance.withoutValue).to.be.undefined;
-            expect(instance.withValue).to.be.equal('val123');
-    
-            expect(setterAdviceWithout).not.to.have.been.called;
-            expect(getterAdviceWithout).to.have.been.calledOnce;
-            expect(setterAdviceWith).to.have.been.calledOnce;
-            expect(getterAdviceWith).to.have.been.calledOnce;
-    
-            instance.withoutValue = '123';
-            instance.withValue = '456';
-            
-            expect(setterAdviceWithout).to.have.been.calledOnce;
-            expect(getterAdviceWithout).to.have.been.calledOnce;
-            expect(setterAdviceWith).to.have.been.calledTwice;
-            expect(getterAdviceWith).to.have.been.calledOnce;
-            
-            expect(instance.withoutValue).to.be.equal('123');
-            expect(instance.withValue).to.be.equal('456');
-            
-            expect(setterAdviceWithout).to.have.been.calledOnce;
-            expect(getterAdviceWithout).to.have.been.calledTwice;
-            expect(setterAdviceWith).to.have.been.calledTwice;
-            expect(getterAdviceWith).to.have.been.calledTwice;
-            
-            instance.withValue = false;
-            
-            expect(instance.withValue).to.be.equal('456');
-        });
-        
-        it('should use parent accessors', () => {
-            const setterParent = spy();
-            const getterParent = spy();
-            const setterParentParent = spy();
-            const getterParentParent = spy();
-            class Aspect {
-                @Setter(TestClass, 'parent')
-                setterParent(jp : SetterJoinpointContext<TestClassDeclaration, 'parent'>) {
-                    setterParent(jp);
-                    jp.proceed();
-                }
-        
-                @Getter(TestClass, 'parent')
-                getterParent(jp : GetterJoinpointContext<TestClassDeclaration, 'parent'>) {
-                    getterParent(jp);
-                    return jp.getValue();
-                }
-                
-                @Setter(TestClass, 'parentParent')
-                setterParentParent(jp : SetterJoinpointContext<TestClassDeclaration, 'parentParent'>) {
-                    setterParentParent(jp);
-                    jp.proceed();
-                }
-        
-                @Getter(TestClass, 'parentParent')
-                getterParentParent(jp : GetterJoinpointContext<TestClassDeclaration, 'parentParent'>) {
-                    getterParentParent(jp);
-                    return jp.getValue();
-                }
-            }
-            manager!.install([ new Aspect() ]);
-            instance = new TestClass();
-            
-            expect(setterParent).not.to.have.been.called;
-            expect(getterParent).not.to.have.been.called;
-            expect(setterParentParent).not.to.have.been.called;
-            expect(getterParentParent).not.to.have.been.called;
-            
-            expect(instance.parent).to.be.undefined;
-            expect(instance.parentParent).to.be.undefined;
-            
-            expect(setterParent).not.to.have.been.called;
-            expect(getterParent).to.have.been.calledOnce;
-            expect(setterParentParent).not.to.have.been.called;
-            expect(getterParentParent).to.have.been.calledOnce;
-            
-            instance.parent = 'p';
-            instance.parentParent = 'pp';
-    
-            expect(setterParent).to.have.been.calledOnce;
-            expect(getterParent).to.have.been.calledOnce;
-            expect(setterParentParent).to.have.been.calledOnce;
-            expect(getterParentParent).to.have.been.calledOnce;
-            
-            expect(instance.$parent).to.be.equal('p');
-            expect(instance.$parentParent).to.be.equal('pp');
-            expect(instance.parent).to.be.equal('p');
-            expect(instance.parentParent).to.be.equal('pp');
-        });
-        
-        it('should throw on getter aspect on setter only', () => {
-            class Aspect {
-                @Getter(TestClass, 'setterOnly')
-                getter(jp : GetterJoinpointContext<TestClassDeclaration, 'setterOnly'>) {
-                    return jp.getValue();
-                }
-            }
-            
-            expect(() => {
-                manager!.install([ new Aspect() ]);
-            }).to.throw('Cannot install getter, only setter available');
-        });
-        
-        it('should throw on setter aspect on getter only', () => {
-            class Aspect {
-                @Setter(TestClass, 'getterOnly')
-                setter(jp : SetterJoinpointContext<TestClassDeclaration, 'getterOnly'>) {
-                    jp.proceed();
-                }
-            }
-            
-            expect(() => {
-                manager!.install([ new Aspect() ]);
-            }).to.throw('Cannot install setter, only getter available');
-        });
+
+    it("should throw on setter aspect on getter only", () => {
+      class Aspect {
+        @Setter(TestClass, "getterOnly")
+        setter(jp: SetterJoinpointContext<TestClassDeclaration, "getterOnly">) {
+          jp.proceed();
+        }
+      }
+
+      expect(() => {
+        manager!.install([new Aspect()]);
+      }).toThrow("Cannot install setter, only getter available");
     });
-    
-    describe('install (static)', () => {
-        it('should replace static methods', () => {
-            const beforeOrigin = TestClass.staticBeforeTest;
-            const afterOrigin = TestClass.staticAfterTest;
-            const aroundOrigin = TestClass.staticAroundTest;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(TestClass.staticBeforeTest).not.to.be.equal(beforeOrigin);
-            expect(TestClass.staticAfterTest).not.to.be.equal(afterOrigin);
-            expect(TestClass.staticAroundTest).not.to.be.equal(aroundOrigin);
-        });
-        
-        it('should set aspect on current class when overwriting parent property', () => {
-            const parentOrigin = TestClass.staticParentTest;
-            expect(Object.getOwnPropertyDescriptor(TestClass, 'staticParentTest')).to.be.undefined;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(Object.getOwnPropertyDescriptor(TestClass, 'staticParentTest')).not.to.be.undefined;
-            
-            (TestClass.staticParentTest as Joinpoint).restore();
-            
-            expect(Object.getOwnPropertyDescriptor(TestClass, 'staticParentTest')).to.be.undefined;
-            expect(TestClass.staticParentTest).to.be.equal(parentOrigin);
-        });
-        
-        it('should restore static methods', () => {
-            const beforeOrigin = TestClass.staticBeforeTest;
-            const afterOrigin = TestClass.staticAfterTest;
-            const aroundOrigin = TestClass.staticAroundTest;
-            
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            (TestClass.staticBeforeTest as Joinpoint).restore();
-            (TestClass.staticAfterTest as Joinpoint).restore();
-            (TestClass.staticAroundTest as Joinpoint).restore();
-            
-            expect(TestClass.staticBeforeTest).to.be.equal(beforeOrigin);
-            expect(TestClass.staticAfterTest).to.be.equal(afterOrigin);
-            expect(TestClass.staticAroundTest).to.be.equal(aroundOrigin);
-        });
-        
-        it('should call before advice', () => {
-            manager!.install([ new TestAspect() ]);
-            
-            expect(TestClass.staticBeforeTest()).to.be.equal('staticBeforeTest');
-            
-            expect(SPIES.staticBefore).to.have.been.calledOnce;
-            expect(SPIES.staticBeforeTest).to.have.been.calledOnce;
-            expect(SPIES.staticBefore).to.have.been.calledBefore(SPIES.staticBeforeTest);
-            
-            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticBeforeTest'> = SPIES.staticBefore.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(TestClass);
-            expect(jp.getProperty()).to.be.equal('staticBeforeTest');
-            
-            SPIES.resetHistory();
-            
-            TestClass.staticBeforeTest(true);
-            expect(SPIES.staticBeforeTest).to.have.been.calledOnceWith(true, 'foobar');
-        });
-        
-        it('should call after advice', () => {
-            manager!.install([ new TestAspect() ]);
-            
-            expect(TestClass.staticAfterTest()).to.be.equal('staticAfterTest');
-            
-            expect(SPIES.staticAfter).to.have.been.calledOnce;
-            expect(SPIES.staticAfterTest).to.have.been.calledOnce;
-            expect(SPIES.staticAfterTest).to.have.been.calledBefore(SPIES.staticAfter);
-            
-            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticAfterTest'> = SPIES.staticAfter.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(TestClass);
-            expect(jp.getProperty()).to.be.equal('staticAfterTest');
-            
-            SPIES.resetHistory();
-            
-            expect(TestClass.staticAfterTest(true)).to.be.equal('foobar');
-            expect(SPIES.staticAfterTest).to.have.been.calledOnceWith(true);
-        });
-        
-        it('should call around advice', () => {
-            manager!.install([ new TestAspect() ]);
-            instance = new TestClass();
-            
-            expect(TestClass.staticAroundTest()).to.be.equal('staticAroundTest');
-            
-            expect(SPIES.staticAround).to.have.been.calledOnce;
-            expect(SPIES.staticAroundTest).to.have.been.calledOnce;
-            expect(SPIES.staticAround).to.have.been.calledBefore(SPIES.staticAroundTest);
-            
-            const jp : JoinpointContext<typeof TestClassDeclaration, 'staticAroundTest'> = SPIES.staticAround.getCall(0).args[ 0 ];
-            expect(jp).to.be.instanceOf(JoinpointContext);
-            expect(jp.getContext()).to.be.equal(TestClass);
-            expect(jp.getProperty()).to.be.equal('staticAroundTest');
-            
-            SPIES.resetHistory();
-            
-            expect(TestClass.staticAroundTest(true)).to.be.undefined;
-            expect(SPIES.staticAround).to.have.been.calledOnce;
-            expect(SPIES.staticAroundTest).not.to.have.been.called;
-        });
+  });
 
-        it('should use inner joinpoint shadow', () => {
-            const origin = TestClassJoinpointShadow.staticMethod;
-            manager!.install([ new TestAspectJoinpointShadow() ]);
+  describe("install (static)", () => {
+    it("should replace static methods", () => {
+      const beforeOrigin = TestClass.staticBeforeTest;
+      const afterOrigin = TestClass.staticAfterTest;
+      const aroundOrigin = TestClass.staticAroundTest;
 
-            expect(TestClassJoinpointShadow.staticMethod).to.be.equal(origin, 'replaced method');
-            expect(TestClassJoinpointShadow.staticMethod('foo')).to.be.equal('FOO+AFTER');
-        });
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(TestClass.staticBeforeTest).not.toEqual(beforeOrigin);
+      expect(TestClass.staticAfterTest).not.toEqual(afterOrigin);
+      expect(TestClass.staticAroundTest).not.toEqual(aroundOrigin);
     });
-    
-    describe('install (static property)', () => {
-        const setterAdviceWithout = spy();
-        const getterAdviceWithout = spy();
-        const setterAdviceWith = spy();
-        const getterAdviceWith = spy();
-        it('should set and get standard values', () => {
-            class Aspect {
-                @StaticSetter(TestClass, 'withoutValue')
-                setterAdviceWithout(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'withoutValue'>) {
-                    setterAdviceWithout(jp);
-                    jp.proceed();
-                }
-                
-                @StaticGetter(TestClass, 'withoutValue')
-                getterAdviceWithout(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'withoutValue'>) {
-                    getterAdviceWithout(jp);
-                    return jp.getValue();
-                }
-                @StaticSetter(TestClass, 'withValue')
-                setterAdviceWith(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'withValue'>) {
-                    setterAdviceWith(jp);
-                    if(jp.getArgument()) {
-                        jp.proceed();
-                    }
-                }
-                
-                @StaticGetter(TestClass, 'withValue')
-                getterAdviceWith(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'withValue'>) {
-                    getterAdviceWith(jp);
-                    const value = jp.getValue();
-                    return value;
-                }
-            }
-            manager!.install([ new Aspect() ]);
-            
-            expect(setterAdviceWithout).not.to.have.been.called;
-            expect(getterAdviceWithout).not.to.have.been.called;
-            expect(setterAdviceWith).not.to.have.been.called;
-            expect(getterAdviceWith).not.to.have.been.called;
 
-            expect(TestClass.withoutValue).to.be.undefined;
-            expect(TestClass.withValue).to.be.equal('val123');
+    it("should set aspect on current class when overwriting parent property", () => {
+      const parentOrigin = TestClass.staticParentTest;
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass, "staticParentTest")
+      ).toBeUndefined();
 
-            expect(setterAdviceWithout).not.to.have.been.called;
-            expect(getterAdviceWithout).to.have.been.calledOnce;
-            expect(setterAdviceWith).not.to.have.been.called;
-            expect(getterAdviceWith).to.have.been.calledOnce;
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
 
-            TestClass.withoutValue = '123';
-            TestClass.withValue = '456';
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass, "staticParentTest")
+      ).not.toBeUndefined();
 
-            expect(setterAdviceWithout).to.have.been.calledOnce;
-            expect(getterAdviceWithout).to.have.been.calledOnce;
-            expect(setterAdviceWith).to.have.been.calledOnce;
-            expect(getterAdviceWith).to.have.been.calledOnce;
+      (TestClass.staticParentTest as Joinpoint).restore();
 
-            expect(TestClass.withoutValue).to.be.equal('123');
-            expect(TestClass.withValue).to.be.equal('456');
-
-            expect(setterAdviceWithout).to.have.been.calledOnce;
-            expect(getterAdviceWithout).to.have.been.calledTwice;
-            expect(setterAdviceWith).to.have.been.calledOnce;
-            expect(getterAdviceWith).to.have.been.calledTwice;
-
-            TestClass.withValue = false;
-
-            expect(TestClass.withValue).to.be.equal('456');
-        });
-        
-        it('should use parent accessors', () => {
-            const setterParent = spy();
-            const getterParent = spy();
-            const setterParentParent = spy();
-            const getterParentParent = spy();
-            class Aspect {
-                @StaticSetter(TestClass, 'parent')
-                setterParent(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'parent'>) {
-                    setterParent(jp);
-                    jp.proceed();
-                }
-                
-                @StaticGetter(TestClass, 'parent')
-                getterParent(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'parent'>) {
-                    getterParent(jp);
-                    return jp.getValue();
-                }
-                
-                @StaticSetter(TestClass, 'parentParent')
-                setterParentParent(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'parentParent'>) {
-                    setterParentParent(jp);
-                    jp.proceed();
-                }
-                
-                @StaticGetter(TestClass, 'parentParent')
-                getterParentParent(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'parentParent'>) {
-                    getterParentParent(jp);
-                    return jp.getValue();
-                }
-            }
-            manager!.install([ new Aspect() ]);
-            
-            expect(setterParent).not.to.have.been.called;
-            expect(getterParent).not.to.have.been.called;
-            expect(setterParentParent).not.to.have.been.called;
-            expect(getterParentParent).not.to.have.been.called;
-            
-            expect(TestClass.parent).to.be.undefined;
-            expect(TestClass.parentParent).to.be.undefined;
-            
-            expect(setterParent).not.to.have.been.called;
-            expect(getterParent).to.have.been.calledOnce;
-            expect(setterParentParent).not.to.have.been.called;
-            expect(getterParentParent).to.have.been.calledOnce;
-            
-            TestClass.parent = 'p';
-            TestClass.parentParent = 'pp';
-            
-            expect(setterParent).to.have.been.calledOnce;
-            expect(getterParent).to.have.been.calledOnce;
-            expect(setterParentParent).to.have.been.calledOnce;
-            expect(getterParentParent).to.have.been.calledOnce;
-            
-            expect(TestClass.$parent).to.be.equal('p');
-            expect(TestClass.$parentParent).to.be.equal('pp');
-            expect(TestClass.parent).to.be.equal('p');
-            expect(TestClass.parentParent).to.be.equal('pp');
-        });
-        
-        it('should throw on getter aspect on setter only', () => {
-            class Aspect {
-                @StaticGetter(TestClass, [ 'setterOnly' ])
-                getter(jp : GetterJoinpointContext<typeof TestClassDeclaration, 'setterOnly'>) {
-                    return jp.getValue();
-                }
-            }
-            
-            expect(() => {
-                manager!.install([ new Aspect() ]);
-            }).to.throw('Cannot install getter, only setter available');
-        });
-        
-        it('should throw on setter aspect on getter only', () => {
-            class Aspect {
-                @StaticSetter(TestClass, [ 'getterOnly' ])
-                setter(jp : SetterJoinpointContext<typeof TestClassDeclaration, 'getterOnly'>) {
-                    jp.proceed();
-                }
-            }
-            
-            expect(() => {
-                manager!.install([ new Aspect() ]);
-            }).to.throw('Cannot install setter, only getter available');
-        });
+      expect(
+        Object.getOwnPropertyDescriptor(TestClass, "staticParentTest")
+      ).toBeUndefined();
+      expect(TestClass.staticParentTest).toEqual(parentOrigin);
     });
-    
+
+    it("should restore static methods", () => {
+      const beforeOrigin = TestClass.staticBeforeTest;
+      const afterOrigin = TestClass.staticAfterTest;
+      const aroundOrigin = TestClass.staticAroundTest;
+
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      (TestClass.staticBeforeTest as Joinpoint).restore();
+      (TestClass.staticAfterTest as Joinpoint).restore();
+      (TestClass.staticAroundTest as Joinpoint).restore();
+
+      expect(TestClass.staticBeforeTest).toEqual(beforeOrigin);
+      expect(TestClass.staticAfterTest).toEqual(afterOrigin);
+      expect(TestClass.staticAroundTest).toEqual(aroundOrigin);
+    });
+
+    it("should call before advice", () => {
+      manager!.install([new TestAspect()]);
+
+      expect(TestClass.staticBeforeTest()).toEqual("staticBeforeTest");
+
+      expect(SPIES.staticBefore).toHaveBeenCalledTimes(1);
+      expect(SPIES.staticBeforeTest).toHaveBeenCalledTimes(1);
+      // expect(SPIES.staticBefore).to.have.been.calledBefore(SPIES.staticBeforeTest);
+
+      const jp: JoinpointContext<
+        typeof TestClassDeclaration,
+        "staticBeforeTest"
+      > = SPIES.staticBefore.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(TestClass);
+      expect(jp.getProperty()).toEqual("staticBeforeTest");
+
+      SPIES.mockReset();
+
+      TestClass.staticBeforeTest(true);
+      expect(SPIES.staticBeforeTest).toHaveBeenCalledWith(true, "foobar");
+    });
+
+    it("should call after advice", () => {
+      manager!.install([new TestAspect()]);
+
+      expect(TestClass.staticAfterTest()).toEqual("staticAfterTest");
+
+      expect(SPIES.staticAfter).toHaveBeenCalledTimes(1);
+      expect(SPIES.staticAfterTest).toHaveBeenCalledTimes(1);
+      // expect(SPIES.staticAfterTest).to.have.been.calledBefore(SPIES.staticAfter);
+
+      const jp: JoinpointContext<
+        typeof TestClassDeclaration,
+        "staticAfterTest"
+      > = SPIES.staticAfter.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(TestClass);
+      expect(jp.getProperty()).toEqual("staticAfterTest");
+
+      SPIES.mockReset();
+
+      expect(TestClass.staticAfterTest(true)).toEqual("foobar");
+      expect(SPIES.staticAfterTest).toHaveBeenCalledWith(true);
+    });
+
+    it("should call around advice", () => {
+      manager!.install([new TestAspect()]);
+      instance = new TestClass();
+
+      expect(TestClass.staticAroundTest()).toEqual("staticAroundTest");
+
+      expect(SPIES.staticAround).toHaveBeenCalledTimes(1);
+      expect(SPIES.staticAroundTest).toHaveBeenCalledTimes(1);
+      // expect(SPIES.staticAround).to.have.been.calledBefore(SPIES.staticAroundTest);
+
+      const jp: JoinpointContext<
+        typeof TestClassDeclaration,
+        "staticAroundTest"
+      > = SPIES.staticAround.mock.calls[0][0];
+      expect(jp).toBeInstanceOf(JoinpointContext);
+      expect(jp.getContext()).toEqual(TestClass);
+      expect(jp.getProperty()).toEqual("staticAroundTest");
+
+      SPIES.mockReset();
+
+      expect(TestClass.staticAroundTest(true)).toBeUndefined();
+      expect(SPIES.staticAround).toHaveBeenCalledTimes(1);
+      expect(SPIES.staticAroundTest).not.toHaveBeenCalled();
+    });
+
+    it("should use inner joinpoint shadow", () => {
+      const origin = TestClassJoinpointShadow.staticMethod;
+      manager!.install([new TestAspectJoinpointShadow()]);
+
+      expect(TestClassJoinpointShadow.staticMethod).toBe(origin);
+      expect(TestClassJoinpointShadow.staticMethod("foo")).toEqual("FOO+AFTER");
+    });
+  });
+
+  describe("install (static property)", () => {
+    const setterAdviceWithout = jest.fn();
+    const getterAdviceWithout = jest.fn();
+    const setterAdviceWith = jest.fn();
+    const getterAdviceWith = jest.fn();
+    it("should set and get standard values", () => {
+      class Aspect {
+        @StaticSetter(TestClass, "withoutValue")
+        setterAdviceWithout(
+          jp: SetterJoinpointContext<
+            typeof TestClassDeclaration,
+            "withoutValue"
+          >
+        ) {
+          setterAdviceWithout(jp);
+          jp.proceed();
+        }
+
+        @StaticGetter(TestClass, "withoutValue")
+        getterAdviceWithout(
+          jp: GetterJoinpointContext<
+            typeof TestClassDeclaration,
+            "withoutValue"
+          >
+        ) {
+          getterAdviceWithout(jp);
+          return jp.getValue();
+        }
+        @StaticSetter(TestClass, "withValue")
+        setterAdviceWith(
+          jp: SetterJoinpointContext<typeof TestClassDeclaration, "withValue">
+        ) {
+          setterAdviceWith(jp);
+          if (jp.getArgument()) {
+            jp.proceed();
+          }
+        }
+
+        @StaticGetter(TestClass, "withValue")
+        getterAdviceWith(
+          jp: GetterJoinpointContext<typeof TestClassDeclaration, "withValue">
+        ) {
+          getterAdviceWith(jp);
+          const value = jp.getValue();
+          return value;
+        }
+      }
+      manager!.install([new Aspect()]);
+
+      expect(setterAdviceWithout).not.toHaveBeenCalled();
+      expect(getterAdviceWithout).not.toHaveBeenCalled();
+      expect(setterAdviceWith).not.toHaveBeenCalled();
+      expect(getterAdviceWith).not.toHaveBeenCalled();
+
+      expect(TestClass.withoutValue).toBeUndefined();
+      expect(TestClass.withValue).toEqual("val123");
+
+      expect(setterAdviceWithout).not.toHaveBeenCalled();
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(setterAdviceWith).not.toHaveBeenCalled();
+      expect(getterAdviceWith).toHaveBeenCalledTimes(1);
+
+      TestClass.withoutValue = "123";
+      TestClass.withValue = "456";
+
+      expect(setterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(setterAdviceWith).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWith).toHaveBeenCalledTimes(1);
+
+      expect(TestClass.withoutValue).toEqual("123");
+      expect(TestClass.withValue).toEqual("456");
+
+      expect(setterAdviceWithout).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWithout).toHaveBeenCalledTimes(2);
+      expect(setterAdviceWith).toHaveBeenCalledTimes(1);
+      expect(getterAdviceWith).toHaveBeenCalledTimes(2);
+
+      TestClass.withValue = false;
+
+      expect(TestClass.withValue).toEqual("456");
+    });
+
+    it("should use parent accessors", () => {
+      const setterParent = jest.fn();
+      const getterParent = jest.fn();
+      const setterParentParent = jest.fn();
+      const getterParentParent = jest.fn();
+      class Aspect {
+        @StaticSetter(TestClass, "parent")
+        setterParent(
+          jp: SetterJoinpointContext<typeof TestClassDeclaration, "parent">
+        ) {
+          setterParent(jp);
+          jp.proceed();
+        }
+
+        @StaticGetter(TestClass, "parent")
+        getterParent(
+          jp: GetterJoinpointContext<typeof TestClassDeclaration, "parent">
+        ) {
+          getterParent(jp);
+          return jp.getValue();
+        }
+
+        @StaticSetter(TestClass, "parentParent")
+        setterParentParent(
+          jp: SetterJoinpointContext<
+            typeof TestClassDeclaration,
+            "parentParent"
+          >
+        ) {
+          setterParentParent(jp);
+          jp.proceed();
+        }
+
+        @StaticGetter(TestClass, "parentParent")
+        getterParentParent(
+          jp: GetterJoinpointContext<
+            typeof TestClassDeclaration,
+            "parentParent"
+          >
+        ) {
+          getterParentParent(jp);
+          return jp.getValue();
+        }
+      }
+      manager!.install([new Aspect()]);
+
+      expect(setterParent).not.toHaveBeenCalled();
+      expect(getterParent).not.toHaveBeenCalled();
+      expect(setterParentParent).not.toHaveBeenCalled();
+      expect(getterParentParent).not.toHaveBeenCalled();
+
+      expect(TestClass.parent).toBeUndefined();
+      expect(TestClass.parentParent).toBeUndefined();
+
+      expect(setterParent).not.toHaveBeenCalled();
+      expect(getterParent).toHaveBeenCalledTimes(1);
+      expect(setterParentParent).not.toHaveBeenCalled();
+      expect(getterParentParent).toHaveBeenCalledTimes(1);
+
+      TestClass.parent = "p";
+      TestClass.parentParent = "pp";
+
+      expect(setterParent).toHaveBeenCalledTimes(1);
+      expect(getterParent).toHaveBeenCalledTimes(1);
+      expect(setterParentParent).toHaveBeenCalledTimes(1);
+      expect(getterParentParent).toHaveBeenCalledTimes(1);
+
+      expect(TestClass.$parent).toEqual("p");
+      expect(TestClass.$parentParent).toEqual("pp");
+      expect(TestClass.parent).toEqual("p");
+      expect(TestClass.parentParent).toEqual("pp");
+    });
+
+    it("should throw on getter aspect on setter only", () => {
+      class Aspect {
+        @StaticGetter(TestClass, ["setterOnly"])
+        getter(
+          jp: GetterJoinpointContext<typeof TestClassDeclaration, "setterOnly">
+        ) {
+          return jp.getValue();
+        }
+      }
+
+      expect(() => {
+        manager!.install([new Aspect()]);
+      }).toThrow("Cannot install getter, only setter available");
+    });
+
+    it("should throw on setter aspect on getter only", () => {
+      class Aspect {
+        @StaticSetter(TestClass, ["getterOnly"])
+        setter(
+          jp: SetterJoinpointContext<typeof TestClassDeclaration, "getterOnly">
+        ) {
+          jp.proceed();
+        }
+      }
+
+      expect(() => {
+        manager!.install([new Aspect()]);
+      }).toThrow("Cannot install setter, only getter available");
+    });
+  });
 });

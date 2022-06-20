@@ -64,7 +64,9 @@ function getDescriptorInPrototypeChain(proto : any, name : string) : PropertyDes
 /**
  * @hidden
  */
-export function createPropertyJoinpoint(fn : (this : any, targets : { getter : Function, setter : Function }, value?: any) => any, mode : MODE, pointcut : string, proto : any) : void {
+export function createPropertyJoinpoint(fn : (this : any, targets : { setter: Function }, value?: any) => any, mode : MODE.SETTER, pointcut : string, proto : any) : void;
+export function createPropertyJoinpoint(fn : (this : any, targets : { getter: Function }, value?: any) => any, mode : MODE.GETTER, pointcut : string, proto : any) : void;
+export function createPropertyJoinpoint(fn : (this : any, targets : { getter: Function, setter: Function }, value?: any) => any, mode : MODE, pointcut : string, proto : any) : void {
     const descriptor : PropertyDescriptor = getDescriptorInPrototypeChain(proto, pointcut) || {
         enumerable: true,
         configurable: true
@@ -93,7 +95,7 @@ export function createPropertyJoinpoint(fn : (this : any, targets : { getter : F
         }
         
         descriptor.set = function(value : any) {
-            fn.call(this, { setter }, value);
+            fn.call(this, { setter } as any, value);
         }
     } else if(mode === MODE.GETTER) {
         const getter = descriptor.get;
@@ -102,7 +104,7 @@ export function createPropertyJoinpoint(fn : (this : any, targets : { getter : F
         }
         
         descriptor.get = function() {
-            return fn.call(this, { getter });
+            return fn.call(this, { getter } as any);
         }
     }
     

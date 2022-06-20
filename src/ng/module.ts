@@ -24,7 +24,7 @@ export class AopRootModule {
 
 @NgModule()
 export class AopModule {
-    static forRoot(aspects: Type<any>[]) : ModuleWithProviders {
+    static forRoot(aspects: Type<any>[]) : ModuleWithProviders<AopRootModule> {
         return {
             ngModule: AopRootModule,
             providers: [
@@ -39,7 +39,7 @@ export class AopModule {
         }
     }
     
-    static forChild(aspects: Type<any>[]) : ModuleWithProviders {
+    static forChild(aspects: Type<any>[]) : ModuleWithProviders<AopModule> {
         return {
             ngModule: AopModule,
             providers: [
