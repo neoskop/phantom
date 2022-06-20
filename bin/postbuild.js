@@ -8,7 +8,7 @@ for (const key of ['version', 'description', 'repository', 'author', 'license', 
     distPkg[key] = pkg[key];
 }
 
-const cjsPath = './cjs/index.js';
+const cjsPath = './cjs/public_api.js';
 
 distPkg.main = cjsPath;
 distPkg.exports['.'].node = cjsPath;
