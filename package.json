@@ -1,6 +1,6 @@
 {
   "name": "@neoskop/phantom",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc.2",
   "description": "An AOP (aspect oriented programming) framework",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
