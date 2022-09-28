@@ -12,7 +12,7 @@ export function instanceFactory(...instances : any[]) {
         AopManager
     ]
 })
-export class AopRootModule {
+export class PhantomRootModule {
     constructor(manager : AopManager,
                 @Optional() @Inject(ASPECTS) aspects?: (object|object[])[]) {
         if(aspects) {
@@ -23,10 +23,10 @@ export class AopRootModule {
 }
 
 @NgModule()
-export class AopModule {
-    static forRoot(aspects: Type<any>[]) : ModuleWithProviders<AopRootModule> {
+export class PhantomModule {
+    static forRoot(aspects: Type<any>[]) : ModuleWithProviders<PhantomRootModule> {
         return {
-            ngModule: AopRootModule,
+            ngModule: PhantomRootModule,
             providers: [
                 aspects,
                 {
@@ -39,9 +39,9 @@ export class AopModule {
         }
     }
     
-    static forChild(aspects: Type<any>[]) : ModuleWithProviders<AopModule> {
+    static forChild(aspects: Type<any>[]) : ModuleWithProviders<PhantomModule> {
         return {
-            ngModule: AopModule,
+            ngModule: PhantomModule,
             providers: [
                 aspects,
                 {
@@ -54,3 +54,5 @@ export class AopModule {
         }
     }
 }
+
+export { PhantomRootModule as AopRootModule, PhantomModule as AopModule };
