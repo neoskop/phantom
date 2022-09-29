@@ -1,4 +1,4 @@
-import { Type } from '@angular/core';
+import { Ctor } from './metadata-utils';
 import { unique } from './utils';
 
 export const REFLECTION_PROPERTY_BLACKLIST = new Set([
@@ -17,8 +17,8 @@ export const REFLECTION_PROPERTY_BLACKLIST = new Set([
  * @hidden
  */
 export class Reflection {
-    static getParentClasses(cls : Type<any>) : Type<any>[] {
-        const parents : Type<any>[] = [];
+    static getParentClasses(cls : Ctor<any>) : Ctor<any>[] {
+        const parents : Ctor<any>[] = [];
         
         let proto = Object.getPrototypeOf(cls.prototype);
         while(proto) {
@@ -29,7 +29,7 @@ export class Reflection {
         return parents;
     }
     
-    static getOwnClassMethods(cls : Type<any>) : string[] {
+    static getOwnClassMethods(cls : Ctor<any>) : string[] {
         const methods : string[] = [];
         
         for(const method of Object.keys(Object.getOwnPropertyDescriptors(cls.prototype)).filter(key => !REFLECTION_PROPERTY_BLACKLIST.has(key))) {
@@ -40,7 +40,7 @@ export class Reflection {
         return methods;
     }
     
-    static getAllClassMethods(cls : Type<any>) : string[] {
+    static getAllClassMethods(cls : Ctor<any>) : string[] {
         const methods : string[] = [];
 
         for(const clazz of [ cls, ...this.getParentClasses(cls) ]) {
@@ -50,11 +50,11 @@ export class Reflection {
         return methods.filter(unique);
     }
     
-    static getOwnStaticClassMethods(cls : Type<any>) : string[] {
+    static getOwnStaticClassMethods(cls : Ctor<any>) : string[] {
         return Object.keys(cls);
     }
     
-    static getAllStaticClassMethods(cls : Type<any>) : string[] {
+    static getAllStaticClassMethods(cls : Ctor<any>) : string[] {
         const methods : string[] = [];
 
         for(const clazz of [ cls, ...this.getParentClasses(cls) ]) {

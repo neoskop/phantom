@@ -1,7 +1,5 @@
-import { Type } from '@neoskop/annotation-factory';
+import { Property } from './annotations';
 import { Joinpoint } from './manager';
-import { Reflection } from './reflection';
-import { Property } from './metadata';
 
 /**
  * @hidden
@@ -111,23 +109,6 @@ export function createPropertyJoinpoint(fn : (this : any, targets : { getter: Fu
     Object.defineProperty(proto, pointcut, descriptor);
 }
 
-/**
- * @hidden
- */
-export function findPointcuts<T>(cls : Type<T>, selector : keyof T | string[] | RegExp) : string[] {
-    const allMethods = Reflection.getAllClassMethods(cls);
-    
-    return allMethods.filter(createFilter(selector));
-}
-
-/**
- * @hidden
- */
-export function findStaticPointcuts<T extends Type<any>>(cls : T, selector : keyof T | string[] | RegExp) : string[] {
-    const allMethods = Reflection.getAllStaticClassMethods(cls);
-    
-    return allMethods.filter(createFilter(selector));
-}
 
 /**
  * @hidden
@@ -153,14 +134,14 @@ export function createFilter<T>(filter : keyof T | string[] | RegExp) : (str : s
 }
 
 /**
- * hidden
+ * @hidden
  */
 export function unique<T>(c : T, i : number, a : T[]) : boolean {
     return a.indexOf(c) === i;
 }
 
 /**
- * hidden
+ * @hidden
  */
 export type ArgumentTypes<T> =
     T extends (arg0 : infer A, arg1 : infer B, arg2 : infer C, arg3 : infer D, arg4 : infer E, arg5 : infer F, arg6 : infer G, arg7 : infer H, arg8 : infer I, arg9 : infer J) => any ? [ A, B, C, D, E, F, G, H, I, J ]
@@ -177,6 +158,6 @@ export type ArgumentTypes<T> =
         : any[];
 
 /**
- * hidden
+ * @hidden
  */
 export type ReturnType<T> = T extends (...args : any[]) => infer R ? R : any;

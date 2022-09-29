@@ -1,4 +1,4 @@
-import { Before } from './metadata';
+import { Before } from './annotations';
 import { JoinpointContext } from './manager';
 
 describe('Github Issues (https://github.com/neoskop/phantom/issues)', () => {

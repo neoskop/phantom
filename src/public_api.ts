@@ -1,3 +1,3 @@
 export * from './manager';
-export * from './metadata';
+export * from './annotations';
 export * from './private_api';

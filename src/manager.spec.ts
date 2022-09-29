@@ -1,24 +1,18 @@
 import {
+  After, AfterPointcut, AfterStatic,
+  Around, AroundPointcut, AroundStatic,
+  Before, BeforePointcut, BeforeStatic,
+  Getter, JoinpointShadow, Setter,
+  StaticGetter,
+  StaticSetter
+} from "./annotations";
+import {
   AopManager,
   GetterJoinpointContext,
   Joinpoint,
   JoinpointContext,
-  SetterJoinpointContext,
+  SetterJoinpointContext
 } from "./manager";
-import {
-  After,
-  AfterStatic,
-  Around,
-  AroundStatic,
-  Before,
-  BeforeStatic,
-  Getter,
-  Setter,
-  StaticGetter,
-  StaticSetter,
-  JoinpointShadow,
-} from "./metadata";
-import { Annotator } from "@neoskop/annotation-factory";
 
 const SPIES = {
   parentParentTest: jest.fn(),
@@ -64,7 +58,9 @@ const SPIES = {
   },
 };
 
-const Misc = Annotator.makePropDecorator("Misc");
+function Misc(): PropertyDecorator {
+  return () => {}
+}
 
 class ParentParentClass {
   $parentParent: any;
@@ -409,7 +405,7 @@ describe("AopManager", () => {
       expect(jp).toBeInstanceOf(JoinpointContext);
       expect(jp.getContext()).toEqual(instance);
       expect(jp.getProperty()).toEqual("beforeTest");
-      expect(jp.getPointcut()).toBeInstanceOf(Before);
+      expect(jp.getPointcut()).toBeInstanceOf(BeforePointcut);
 
       SPIES.mockReset();
 
@@ -432,7 +428,7 @@ describe("AopManager", () => {
       expect(jp).toBeInstanceOf(JoinpointContext);
       expect(jp.getContext()).toEqual(instance);
       expect(jp.getProperty()).toEqual("afterTest");
-      expect(jp.getPointcut()).toBeInstanceOf(After);
+      expect(jp.getPointcut()).toBeInstanceOf(AfterPointcut);
 
       SPIES.mockReset();
 
@@ -455,7 +451,7 @@ describe("AopManager", () => {
       expect(jp).toBeInstanceOf(JoinpointContext);
       expect(jp.getContext()).toEqual(instance);
       expect(jp.getProperty()).toEqual("aroundTest");
-      expect(jp.getPointcut()).toBeInstanceOf(Around);
+      expect(jp.getPointcut()).toBeInstanceOf(AroundPointcut);
 
       SPIES.mockReset();
 
